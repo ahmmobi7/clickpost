@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- Base application theme (Material3, no action bar) -->
+    <style name="Theme.ClickPost" parent="Theme.Material3.DayNight.NoActionBar">
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:navigationBarColor">@android:color/transparent</item>
+        <item name="android:windowLightStatusBar">true</item>
+    </style>
+
+    <!-- Splash screen theme (used in AndroidManifest until MainActivity inflates) -->
+    <style name="Theme.ClickPost.Splash" parent="Theme.SplashScreen">
+        <item name="windowSplashScreenBackground">#F5F6F8</item>
+        <item name="windowSplashScreenAnimatedIcon">@drawable/ic_splash_logo</item>
+        <item name="postSplashScreenTheme">@style/Theme.ClickPost</item>
+    </style>
+
+</resources>

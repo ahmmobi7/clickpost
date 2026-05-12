@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">ClickPost</string>
+    <string name="export_brand">Export &amp; Brand</string>
+    <string name="export_success">Video ready to share!</string>
+    <string name="logo_required">Company name and logo are required</string>
+    <string name="save_changes">Save Changes</string>
+    <string name="save_continue">Save &amp; Continue</string>
+    <string name="select_video">Select Video</string>
+    <string name="setup_subtitle">This will be applied to every video automatically</string>
+    <string name="setup_title">Set up your brand</string>
+    <string name="share_chooser_title">Share Video</string>
+    <string name="tagline">Auto brand your videos</string>
+    <style name="Theme.ClickPost" parent="Theme.Material3.DayNight.NoActionBar">
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:navigationBarColor">@android:color/transparent</item>
+        <item name="android:windowLightStatusBar">true</item>
+    </style>
+    <style name="Theme.ClickPost.Splash" parent="Theme.SplashScreen">
+        <item name="windowSplashScreenBackground">#F5F6F8</item>
+        <item name="windowSplashScreenAnimatedIcon">@drawable/ic_splash_logo</item>
+        <item name="postSplashScreenTheme">@style/Theme.ClickPost</item>
+    </style>
+</resources>

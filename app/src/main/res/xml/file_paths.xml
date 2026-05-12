@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<paths>
+    <!-- Exports directory on external files dir (Movies/ClickPost/) -->
+    <external-files-path
+        name="exports"
+        path="Movies/ClickPost/" />
+
+    <!-- App-internal files dir for branding assets -->
+    <files-path
+        name="branding"
+        path="branding/" />
+
+    <!-- Cache dir for temp files if needed -->
+    <cache-path
+        name="cache"
+        path="temp_videos/" />
+</paths>
