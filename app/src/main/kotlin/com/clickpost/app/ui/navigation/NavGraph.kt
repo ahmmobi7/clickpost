@@ -13,6 +13,9 @@ import androidx.navigation.navArgument
 import com.clickpost.app.engine.ExportState
 import com.clickpost.app.social.data.Platform
 import com.clickpost.app.social.ui.screens.*
+import com.clickpost.app.promo.ui.PromoAssetSelectionScreen
+import com.clickpost.app.promo.ui.PromoDashboardScreen
+import com.clickpost.app.promo.viewmodel.PromoViewModel
 import com.clickpost.app.social.viewmodel.AccountGroupViewModel
 import com.clickpost.app.social.viewmodel.PublishViewModel
 import com.clickpost.app.ui.screens.*
@@ -25,6 +28,8 @@ object Routes {
     const val BRANDING_CTRL  = "branding_control"
     const val EXPORT         = "export"
     const val PROFILE_EDIT   = "profile_edit"
+    const val PROMO_DASHBOARD = "promo_dashboard"
+    const val PROMO_ASSETS    = "promo_assets"
     const val ACCOUNT_GROUPS = "account_groups"
     const val CREATE_EDIT_GROUP = "create_edit_group?groupId={groupId}"
     const val PLATFORM_CREDENTIAL_FORM = "platform_credential_form/{groupId}/{platform}"
@@ -72,7 +77,30 @@ fun ClickPostNavGraph(
             DashboardScreen(
                 viewModel = viewModel,
                 onVideoSelected = { navController.navigate(Routes.BRANDING_CTRL) },
-                onEditProfile = { navController.navigate(Routes.PROFILE_EDIT) }
+                onEditProfile = { navController.navigate(Routes.PROFILE_EDIT) },
+                onPromoDashboard = { navController.navigate(Routes.PROMO_DASHBOARD) }
+            )
+        }
+
+        composable(Routes.PROMO_DASHBOARD) {
+            val promoViewModel: PromoViewModel = hiltViewModel()
+            PromoDashboardScreen(
+                viewModel = promoViewModel,
+                onCreateNew = { navController.navigate(Routes.PROMO_ASSETS) },
+                onEdit = { navController.navigate(Routes.PROMO_ASSETS) },
+                onBack = { navController.popBackStack() }
+            )
+        }
+
+        composable(Routes.PROMO_ASSETS) {
+            val promoViewModel: PromoViewModel = hiltViewModel()
+            PromoAssetSelectionScreen(
+                viewModel = promoViewModel,
+                onNext = { resolution ->
+                    promoViewModel.startPromoGeneration("Check out our new product!", resolution)
+                    navController.popBackStack(Routes.PROMO_DASHBOARD, false)
+                },
+                onBack = { navController.popBackStack() }
             )
         }
 
