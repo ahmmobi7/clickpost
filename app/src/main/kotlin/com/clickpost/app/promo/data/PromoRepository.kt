@@ -12,6 +12,7 @@ class PromoRepository @Inject constructor(
     suspend fun insertHookVideo(hookVideo: HookVideo) = promoDao.insertHookVideo(hookVideo)
 
     fun getAllProductAssets(): Flow<List<ProductAsset>> = promoDao.getAllProductAssets()
+    suspend fun getProductAssetsByIds(ids: List<Long>): List<ProductAsset> = promoDao.getProductAssetsByIds(ids)
     suspend fun insertProductAsset(productAsset: ProductAsset) = promoDao.insertProductAsset(productAsset)
 
     fun getAllModelImages(): Flow<List<ModelImage>> = promoDao.getAllModelImages()
