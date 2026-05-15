@@ -28,6 +28,9 @@ data class PromoUiState(
     val selectedProductAssets: List<ProductAsset> = emptyList(),
     val selectedModelImage: ModelImage? = null,
     val selectedMusic: PromoMusic? = null,
+    val slideDurationS: Int = 5,
+    val contrast: Float = 1.0f,
+    val sharpness: Float = 0.0f,
     val isProcessing: Boolean = false,
     val exportProgress: Float = 0f,
     val errorMessage: String? = null
@@ -86,14 +89,21 @@ class PromoViewModel @Inject constructor(
         }
     }
 
-    fun addProductAsset(uriString: String, type: String, description: String) {
+    fun addProductAssets(uriStrings: List<String>) {
         viewModelScope.launch {
-            val fileName = "product_asset_${System.currentTimeMillis()}.png"
-            val internalUri = copyToInternalStorage(uriString, fileName)
-            val asset = ProductAsset(uri = internalUri, type = type, description = description)
-            repository.insertProductAsset(asset)
-            _uiState.update { it.copy(selectedProductAssets = it.selectedProductAssets + asset) }
+            val newAssets = uriStrings.map { uriString ->
+                val fileName = "product_asset_${System.currentTimeMillis()}_${uriString.hashCode()}.png"
+                val internalUri = copyToInternalStorage(uriString, fileName)
+                val asset = ProductAsset(uri = internalUri, type = "Image", description = "Product Image")
+                repository.insertProductAsset(asset)
+                asset
+            }
+            _uiState.update { it.copy(selectedProductAssets = it.selectedProductAssets + newAssets) }
         }
+    }
+
+    fun removeProductAsset(asset: ProductAsset) {
+        _uiState.update { it.copy(selectedProductAssets = it.selectedProductAssets - asset) }
     }
 
     fun selectModelImage(uriString: String) {
@@ -112,6 +122,22 @@ class PromoViewModel @Inject constructor(
             repository.insertMusic(music)
             _uiState.update { it.copy(selectedMusic = music) }
         }
+    }
+
+    fun clearMusic() {
+        _uiState.update { it.copy(selectedMusic = null) }
+    }
+
+    fun updateSlideDuration(durationS: Int) {
+        _uiState.update { it.copy(slideDurationS = durationS) }
+    }
+
+    fun updateContrast(contrast: Float) {
+        _uiState.update { it.copy(contrast = contrast) }
+    }
+
+    fun updateSharpness(sharpness: Float) {
+        _uiState.update { it.copy(sharpness = sharpness) }
     }
 
     private fun copyToInternalStorage(uriString: String, fileName: String): String {
@@ -148,7 +174,11 @@ class PromoViewModel @Inject constructor(
                 "modelUri" to modelUri,
                 "musicUri" to musicUri,
                 "description" to description,
-                "resolutionHeight" to resolutionHeight
+                "resolutionHeight" to resolutionHeight,
+                "slideDurationS" to uiState.slideDurationS,
+                "contrast" to uiState.contrast,
+                "sharpness" to uiState.sharpness,
+                "productAssetIds" to uiState.selectedProductAssets.map { it.id }.toLongArray()
             ))
             .build()
 

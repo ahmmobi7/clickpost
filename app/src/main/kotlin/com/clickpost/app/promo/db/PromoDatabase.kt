@@ -2,6 +2,7 @@ package com.clickpost.app.promo.db
 
 import androidx.room.Database
 import androidx.room.RoomDatabase
+import androidx.room.TypeConverters
 import com.clickpost.app.promo.data.*
 
 @Database(
@@ -12,9 +13,10 @@ import com.clickpost.app.promo.data.*
         GeneratedPromo::class,
         PromoMusic::class
     ],
-    version = 1,
+    version = 2,
     exportSchema = false
 )
+@TypeConverters(PromoConverters::class)
 abstract class PromoDatabase : RoomDatabase() {
     abstract fun promoDao(): PromoDao
 

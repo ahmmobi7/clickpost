@@ -17,6 +17,9 @@ interface PromoDao {
     @Query("SELECT * FROM product_assets")
     fun getAllProductAssets(): Flow<List<ProductAsset>>
 
+    @Query("SELECT * FROM product_assets WHERE id IN (:ids)")
+    suspend fun getProductAssetsByIds(ids: List<Long>): List<ProductAsset>
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertModelImage(modelImage: ModelImage)
 

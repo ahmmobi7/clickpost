@@ -30,7 +30,8 @@ data class GeneratedPromo(
     @PrimaryKey(autoGenerate = true) val id: Long = 0,
     val filePath: String,
     val timestamp: Long = System.currentTimeMillis(),
-    val metadata: String? = null
+    val metadata: String? = null,
+    val productAssetIds: List<Long> = emptyList()
 )
 
 @Entity(tableName = "promo_music")

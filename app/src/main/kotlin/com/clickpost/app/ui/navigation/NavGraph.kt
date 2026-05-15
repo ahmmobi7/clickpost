@@ -3,10 +3,12 @@ package com.clickpost.app.ui.navigation
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.compose.navigation
 import androidx.navigation.compose.rememberNavController
 import androidx.media3.common.util.UnstableApi
 import androidx.navigation.navArgument
@@ -82,26 +84,32 @@ fun ClickPostNavGraph(
             )
         }
 
-        composable(Routes.PROMO_DASHBOARD) {
-            val promoViewModel: PromoViewModel = hiltViewModel()
-            PromoDashboardScreen(
-                viewModel = promoViewModel,
-                onCreateNew = { navController.navigate(Routes.PROMO_ASSETS) },
-                onEdit = { navController.navigate(Routes.PROMO_ASSETS) },
-                onBack = { navController.popBackStack() }
-            )
-        }
+        navigation(
+            startDestination = Routes.PROMO_DASHBOARD,
+            route = "promo_flow"
+        ) {
+            composable(Routes.PROMO_DASHBOARD) { backStackEntry ->
+                val promoViewModel: PromoViewModel = hiltViewModel(backStackEntry)
+                PromoDashboardScreen(
+                    viewModel = promoViewModel,
+                    onCreateNew = { navController.navigate(Routes.PROMO_ASSETS) },
+                    onEdit = { navController.navigate(Routes.PROMO_ASSETS) },
+                    onBack = { navController.popBackStack() }
+                )
+            }
 
-        composable(Routes.PROMO_ASSETS) {
-            val promoViewModel: PromoViewModel = hiltViewModel()
-            PromoAssetSelectionScreen(
-                viewModel = promoViewModel,
-                onNext = { resolution ->
-                    promoViewModel.startPromoGeneration("Check out our new product!", resolution)
-                    navController.popBackStack(Routes.PROMO_DASHBOARD, false)
-                },
-                onBack = { navController.popBackStack() }
-            )
+            composable(Routes.PROMO_ASSETS) {
+                val promoFlowEntry = remember(it) { navController.getBackStackEntry("promo_flow") }
+                val promoViewModel: PromoViewModel = hiltViewModel(promoFlowEntry)
+                PromoAssetSelectionScreen(
+                    viewModel = promoViewModel,
+                    onNext = { resolution ->
+                        promoViewModel.startPromoGeneration("Check out our new product!", resolution)
+                        navController.popBackStack(Routes.PROMO_DASHBOARD, false)
+                    },
+                    onBack = { navController.popBackStack() }
+                )
+            }
         }
 
         composable(Routes.BRANDING_CTRL) {

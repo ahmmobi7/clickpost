@@ -5,6 +5,7 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.media.MediaScannerConnection
 import android.net.Uri
+import androidx.media3.common.util.UnstableApi
 import androidx.media3.transformer.Transformer
 import androidx.media3.transformer.ExportResult
 import androidx.media3.transformer.Composition
@@ -22,6 +23,7 @@ import java.io.FileOutputStream
 import java.util.concurrent.CountDownLatch
 import androidx.hilt.work.HiltWorker
 
+@UnstableApi
 @HiltWorker
 class PromoWorker @AssistedInject constructor(
     @Assisted context: Context,
@@ -34,11 +36,15 @@ class PromoWorker @AssistedInject constructor(
 
     override suspend fun doWork(): Result = withContext(Dispatchers.Default) {
         val hookUri = inputData.getString("hookUri") ?: return@withContext Result.failure()
-        val productUris = inputData.getStringArray("productUris") ?: return@withContext Result.failure()
+        val productAssetIds = inputData.getLongArray("productAssetIds")?.toList() ?: emptyList()
         val modelUri = inputData.getString("modelUri") ?: return@withContext Result.failure()
         val musicUri = inputData.getString("musicUri")
         val description = inputData.getString("description") ?: ""
         val resolutionHeight = inputData.getInt("resolutionHeight", 1080)
+        val slideDurationS = inputData.getInt("slideDurationS", 5)
+        val contrast = inputData.getFloat("contrast", 1.0f)
+        val sharpness = inputData.getFloat("sharpness", 0.0f)
+
         val targetWidth = (resolutionHeight * 9 / 16)
 
         try {
@@ -46,7 +52,10 @@ class PromoWorker @AssistedInject constructor(
             val modelBitmap = loadScaledBitmap(modelUriParsed, targetWidth, resolutionHeight)
             val blendedUris = mutableListOf<Uri>()
 
-            for ((index, pUri) in productUris.withIndex()) {
+            val productAssets = repository.getProductAssetsByIds(productAssetIds)
+
+            for ((index, asset) in productAssets.withIndex()) {
+                val pUri = asset.uri
                 val pUriParsed = if (pUri.startsWith("/")) Uri.fromFile(File(pUri)) else Uri.parse(pUri)
                 val productBitmap = loadScaledBitmap(pUriParsed, targetWidth / 2, resolutionHeight / 2)
                 val processedProduct = backgroundRemover.removeBackground(productBitmap)
@@ -83,13 +92,16 @@ class PromoWorker @AssistedInject constructor(
                 }
             }
 
-            val transformer = videoEngine.createTransformer(transformerListener)
+            val transformer = videoEngine.createTransformer(transformerListener, contrast, sharpness)
             val hookUriParsed = if (hookUri.startsWith("/")) Uri.fromFile(File(hookUri)) else Uri.parse(hookUri)
             val composition = videoEngine.buildComposition(
                 hookVideoUri = hookUriParsed,
                 blendedBitmapUris = blendedUris,
                 musicUri = musicUri?.let { if (it.startsWith("/")) Uri.fromFile(File(it)) else Uri.parse(it) },
-                targetResolutionHeight = resolutionHeight
+                targetResolutionHeight = resolutionHeight,
+                slideDurationS = slideDurationS,
+                contrast = contrast,
+                sharpness = sharpness
             )
 
             withContext(Dispatchers.Main) {
@@ -102,7 +114,12 @@ class PromoWorker @AssistedInject constructor(
                 return@withContext Result.failure(workDataOf("error" to exportError?.message))
             }
 
-            repository.insertGeneratedPromo(GeneratedPromo(filePath = outputFile.absolutePath))
+            repository.insertGeneratedPromo(
+                GeneratedPromo(
+                    filePath = outputFile.absolutePath,
+                    productAssetIds = productAssetIds
+                )
+            )
 
             // Scan file for gallery visibility
             MediaScannerConnection.scanFile(applicationContext, arrayOf(outputFile.absolutePath), null, null)

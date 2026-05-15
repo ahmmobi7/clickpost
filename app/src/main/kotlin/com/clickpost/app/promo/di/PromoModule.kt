@@ -22,7 +22,9 @@ object PromoModule {
             context,
             PromoDatabase::class.java,
             PromoDatabase.DB_NAME
-        ).build()
+        )
+        .fallbackToDestructiveMigration()
+        .build()
     }
 
     @Provides
