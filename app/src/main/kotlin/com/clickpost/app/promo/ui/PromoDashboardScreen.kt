@@ -116,7 +116,7 @@ fun PromoCard(
 
 private fun playVideo(context: Context, filePath: String) {
     val file = File(filePath)
-    val uri = FileProvider.getUriForFile(context, "${context.packageName}.provider", file)
+    val uri = FileProvider.getUriForFile(context, "${context.packageName}.fileprovider", file)
     val intent = Intent(Intent.ACTION_VIEW).apply {
         setDataAndType(uri, "video/mp4")
         addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
@@ -126,7 +126,7 @@ private fun playVideo(context: Context, filePath: String) {
 
 private fun shareVideo(context: Context, filePath: String) {
     val file = File(filePath)
-    val uri = FileProvider.getUriForFile(context, "${context.packageName}.provider", file)
+    val uri = FileProvider.getUriForFile(context, "${context.packageName}.fileprovider", file)
     val intent = Intent(Intent.ACTION_SEND).apply {
         type = "video/mp4"
         putExtra(Intent.EXTRA_STREAM, uri)

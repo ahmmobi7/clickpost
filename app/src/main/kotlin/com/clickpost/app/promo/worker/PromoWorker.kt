@@ -42,11 +42,13 @@ class PromoWorker @AssistedInject constructor(
         val targetWidth = (resolutionHeight * 9 / 16)
 
         try {
-            val modelBitmap = loadScaledBitmap(modelUri, targetWidth, resolutionHeight)
+            val modelUriParsed = if (modelUri.startsWith("/")) Uri.fromFile(File(modelUri)) else Uri.parse(modelUri)
+            val modelBitmap = loadScaledBitmap(modelUriParsed, targetWidth, resolutionHeight)
             val blendedUris = mutableListOf<Uri>()
 
             for ((index, pUri) in productUris.withIndex()) {
-                val productBitmap = loadScaledBitmap(pUri, targetWidth / 2, resolutionHeight / 2)
+                val pUriParsed = if (pUri.startsWith("/")) Uri.fromFile(File(pUri)) else Uri.parse(pUri)
+                val productBitmap = loadScaledBitmap(pUriParsed, targetWidth / 2, resolutionHeight / 2)
                 val processedProduct = backgroundRemover.removeBackground(productBitmap)
 
                 val blendedBitmap = imageBlender.blend(
@@ -82,10 +84,11 @@ class PromoWorker @AssistedInject constructor(
             }
 
             val transformer = videoEngine.createTransformer(transformerListener)
+            val hookUriParsed = if (hookUri.startsWith("/")) Uri.fromFile(File(hookUri)) else Uri.parse(hookUri)
             val composition = videoEngine.buildComposition(
-                hookVideoUri = Uri.parse(hookUri),
+                hookVideoUri = hookUriParsed,
                 blendedBitmapUris = blendedUris,
-                musicUri = musicUri?.let { Uri.parse(it) },
+                musicUri = musicUri?.let { if (it.startsWith("/")) Uri.fromFile(File(it)) else Uri.parse(it) },
                 targetResolutionHeight = resolutionHeight
             )
 
@@ -110,8 +113,7 @@ class PromoWorker @AssistedInject constructor(
         }
     }
 
-    private fun loadScaledBitmap(uriString: String, reqWidth: Int, reqHeight: Int): Bitmap {
-        val uri = Uri.parse(uriString)
+    private fun loadScaledBitmap(uri: Uri, reqWidth: Int, reqHeight: Int): Bitmap {
         val options = BitmapFactory.Options().apply {
             inJustDecodeBounds = true
         }

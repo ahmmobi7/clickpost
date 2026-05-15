@@ -17,9 +17,14 @@ import dagger.hilt.processor.internal.definecomponent.codegen._dagger_hilt_andro
 import dagger.hilt.processor.internal.definecomponent.codegen._dagger_hilt_android_internal_builders_ViewModelComponentBuilder;
 import dagger.hilt.processor.internal.definecomponent.codegen._dagger_hilt_android_internal_builders_ViewWithFragmentComponentBuilder;
 import dagger.hilt.processor.internal.definecomponent.codegen._dagger_hilt_components_SingletonComponent;
+import hilt_aggregated_deps._androidx_hilt_work_HiltWrapper_WorkerFactoryModule;
 import hilt_aggregated_deps._com_clickpost_app_ClickPostApp_GeneratedInjector;
 import hilt_aggregated_deps._com_clickpost_app_MainActivity_GeneratedInjector;
 import hilt_aggregated_deps._com_clickpost_app_di_AppModule;
+import hilt_aggregated_deps._com_clickpost_app_promo_di_PromoModule;
+import hilt_aggregated_deps._com_clickpost_app_promo_viewmodel_PromoViewModel_HiltModules_BindsModule;
+import hilt_aggregated_deps._com_clickpost_app_promo_viewmodel_PromoViewModel_HiltModules_KeyModule;
+import hilt_aggregated_deps._com_clickpost_app_promo_worker_PromoWorker_HiltModule;
 import hilt_aggregated_deps._com_clickpost_app_social_di_SocialModule;
 import hilt_aggregated_deps._com_clickpost_app_social_viewmodel_AccountGroupViewModel_HiltModules_BindsModule;
 import hilt_aggregated_deps._com_clickpost_app_social_viewmodel_AccountGroupViewModel_HiltModules_KeyModule;
@@ -67,9 +72,14 @@ import hilt_aggregated_deps._dagger_hilt_android_internal_modules_HiltWrapper_Ac
         _dagger_hilt_components_SingletonComponent.class
     },
     aggregatedDeps = {
+        _androidx_hilt_work_HiltWrapper_WorkerFactoryModule.class,
         _com_clickpost_app_ClickPostApp_GeneratedInjector.class,
         _com_clickpost_app_MainActivity_GeneratedInjector.class,
         _com_clickpost_app_di_AppModule.class,
+        _com_clickpost_app_promo_di_PromoModule.class,
+        _com_clickpost_app_promo_viewmodel_PromoViewModel_HiltModules_BindsModule.class,
+        _com_clickpost_app_promo_viewmodel_PromoViewModel_HiltModules_KeyModule.class,
+        _com_clickpost_app_promo_worker_PromoWorker_HiltModule.class,
         _com_clickpost_app_social_di_SocialModule.class,
         _com_clickpost_app_social_viewmodel_AccountGroupViewModel_HiltModules_BindsModule.class,
         _com_clickpost_app_social_viewmodel_AccountGroupViewModel_HiltModules_KeyModule.class,

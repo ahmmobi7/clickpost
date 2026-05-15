@@ -7,14 +7,15 @@ plugins {
 
 android {
     namespace = "com.clickpost.app"
-    compileSdk = 34
+    compileSdk = 35
 
     defaultConfig {
         applicationId = "com.clickpost.app"
         minSdk = 26
-        targetSdk = 34
+        targetSdk = 35
         versionCode = 1
         versionName = "1.0.0"
+        buildToolsVersion = "35.0.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
@@ -60,6 +61,10 @@ android {
     packaging {
         resources {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
+            doNotCompress += "**.so"
+        }
+        jniLibs {
+            useLegacyPackaging = false
         }
     }
 }
@@ -90,10 +95,16 @@ dependencies {
     // Navigation
     implementation("androidx.navigation:navigation-compose:2.7.6")
 
+    // WorkManager
+    val workVersion = "2.9.0"
+    implementation("androidx.work:work-runtime-ktx:$workVersion")
+
     // Hilt DI
     implementation("com.google.dagger:hilt-android:2.50")
     ksp("com.google.dagger:hilt-compiler:2.50")
     implementation("androidx.hilt:hilt-navigation-compose:1.1.0")
+    implementation("androidx.hilt:hilt-work:1.2.0")
+    ksp("androidx.hilt:hilt-compiler:1.2.0")
 
     // Media3 (Video processing)
     val media3Version = "1.3.1"
@@ -114,7 +125,7 @@ dependencies {
     implementation("androidx.datastore:datastore-preferences:1.0.0")
 
     // Coroutines
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.8.0")
 
     // Splash screen
     implementation("androidx.core:core-splashscreen:1.0.1")
@@ -134,6 +145,10 @@ dependencies {
 
     // Biometric (for credential view gate)
     implementation("androidx.biometric:biometric:1.1.0")
+
+    // ML Kit
+    implementation("com.google.mlkit:segmentation-selfie:16.0.0-beta6")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-play-services:1.8.0")
 
     // Test
     testImplementation("junit:junit:4.13.2")

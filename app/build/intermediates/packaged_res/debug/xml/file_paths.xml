@@ -5,13 +5,13 @@
         name="exports"
         path="Movies/ClickPost/" />
 
-    <!-- App-internal files dir for branding assets -->
+    <!-- App-internal files dir -->
     <files-path
-        name="branding"
-        path="branding/" />
+        name="internal_files"
+        path="." />
 
-    <!-- Cache dir for temp files if needed -->
+    <!-- Cache dir for temp files -->
     <cache-path
-        name="cache"
-        path="temp_videos/" />
+        name="cache_files"
+        path="." />
 </paths>

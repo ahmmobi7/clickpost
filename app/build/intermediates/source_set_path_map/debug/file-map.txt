@@ -1,9 +1,9 @@
-com.clickpost.app-resValues-0 C:\Clickpost Android\ClickPost\ClickPost\app\build\generated\res\resValues\debug
-com.clickpost.app-packageDebugResources-1 C:\Clickpost Android\ClickPost\ClickPost\app\build\intermediates\incremental\debug\packageDebugResources\merged.dir
-com.clickpost.app-packageDebugResources-2 C:\Clickpost Android\ClickPost\ClickPost\app\build\intermediates\incremental\debug\packageDebugResources\stripped.dir
-com.clickpost.app-merged_res-3 C:\Clickpost Android\ClickPost\ClickPost\app\build\intermediates\merged_res\debug
-com.clickpost.app-debug-4 C:\Clickpost Android\ClickPost\ClickPost\app\src\debug\res
-com.clickpost.app-main-5 C:\Clickpost Android\ClickPost\ClickPost\app\src\main\res
+com.clickpost.app-resValues-0 C:\Clickpost Android\cp_v2promo\clickpost\app\build\generated\res\resValues\debug
+com.clickpost.app-packageDebugResources-1 C:\Clickpost Android\cp_v2promo\clickpost\app\build\intermediates\incremental\debug\packageDebugResources\merged.dir
+com.clickpost.app-packageDebugResources-2 C:\Clickpost Android\cp_v2promo\clickpost\app\build\intermediates\incremental\debug\packageDebugResources\stripped.dir
+com.clickpost.app-merged_res-3 C:\Clickpost Android\cp_v2promo\clickpost\app\build\intermediates\merged_res\debug
+com.clickpost.app-debug-4 C:\Clickpost Android\cp_v2promo\clickpost\app\src\debug\res
+com.clickpost.app-main-5 C:\Clickpost Android\cp_v2promo\clickpost\app\src\main\res
 com.clickpost.app-lifecycle-runtime-ktx-2.7.0-6 C:\Users\husain\.gradle\caches\transforms-4\00e2535327933e9805e420cf8349977e\transformed\lifecycle-runtime-ktx-2.7.0\res
 com.clickpost.app-navigation-compose-2.7.6-7 C:\Users\husain\.gradle\caches\transforms-4\0302eafcdff38fe8e15f59d028e33760\transformed\navigation-compose-2.7.6\res
 com.clickpost.app-ui-tooling-preview-release-8 C:\Users\husain\.gradle\caches\transforms-4\0891621064e42eaa02e95e3d3ef0b9a3\transformed\ui-tooling-preview-release\res
@@ -21,61 +21,67 @@ com.clickpost.app-navigation-common-ktx-2.7.6-19 C:\Users\husain\.gradle\caches\
 com.clickpost.app-runtime-saveable-release-20 C:\Users\husain\.gradle\caches\transforms-4\36d2babdf59e7ec949d5680dd6530041\transformed\runtime-saveable-release\res
 com.clickpost.app-hilt-navigation-1.1.0-21 C:\Users\husain\.gradle\caches\transforms-4\397d4ce16bad350814dafc4ebcbde88b\transformed\hilt-navigation-1.1.0\res
 com.clickpost.app-navigation-common-2.7.6-22 C:\Users\husain\.gradle\caches\transforms-4\3bdb098136c6c317572a12e2c8910250\transformed\navigation-common-2.7.6\res
-com.clickpost.app-room-runtime-2.6.1-23 C:\Users\husain\.gradle\caches\transforms-4\3d46b77ee75387ee246249f24c339568\transformed\room-runtime-2.6.1\res
-com.clickpost.app-lifecycle-livedata-core-ktx-2.7.0-24 C:\Users\husain\.gradle\caches\transforms-4\433025e20b39ef28f133538615f2f24d\transformed\lifecycle-livedata-core-ktx-2.7.0\res
-com.clickpost.app-sqlite-framework-2.4.0-25 C:\Users\husain\.gradle\caches\transforms-4\43d29131fa81094cc65b2f3f437acc3c\transformed\sqlite-framework-2.4.0\res
-com.clickpost.app-core-splashscreen-1.0.1-26 C:\Users\husain\.gradle\caches\transforms-4\4d1bac077b5e1cdcdd93a823932d4ab6\transformed\core-splashscreen-1.0.1\res
-com.clickpost.app-navigation-runtime-ktx-2.7.6-27 C:\Users\husain\.gradle\caches\transforms-4\51e91330585b99261fb7d4390e4dfa08\transformed\navigation-runtime-ktx-2.7.6\res
-com.clickpost.app-material-1.11.0-28 C:\Users\husain\.gradle\caches\transforms-4\54f5c18f65c9953971fad543484d5382\transformed\material-1.11.0\res
-com.clickpost.app-ui-unit-release-29 C:\Users\husain\.gradle\caches\transforms-4\57c10acd775a78c4d0c15591be01ee31\transformed\ui-unit-release\res
-com.clickpost.app-ui-geometry-release-30 C:\Users\husain\.gradle\caches\transforms-4\580887367660ac600fa02179aa8ec147\transformed\ui-geometry-release\res
-com.clickpost.app-savedstate-ktx-1.2.1-31 C:\Users\husain\.gradle\caches\transforms-4\59417e57c468ad77995b7ea2d86772a4\transformed\savedstate-ktx-1.2.1\res
-com.clickpost.app-runtime-release-32 C:\Users\husain\.gradle\caches\transforms-4\59e5276cddb11c7a550cb689c8623bb1\transformed\runtime-release\res
-com.clickpost.app-animation-core-release-33 C:\Users\husain\.gradle\caches\transforms-4\5a8da487f6a594df1b5925f15c44be8f\transformed\animation-core-release\res
-com.clickpost.app-foundation-release-34 C:\Users\husain\.gradle\caches\transforms-4\5f88591788c7963ab413473e16590e03\transformed\foundation-release\res
-com.clickpost.app-ui-tooling-data-release-35 C:\Users\husain\.gradle\caches\transforms-4\633b80a602d2547663da5a470aa46939\transformed\ui-tooling-data-release\res
-com.clickpost.app-appcompat-resources-1.6.1-36 C:\Users\husain\.gradle\caches\transforms-4\64be31f3501828540cab76531b203508\transformed\appcompat-resources-1.6.1\res
-com.clickpost.app-appcompat-1.6.1-37 C:\Users\husain\.gradle\caches\transforms-4\66ac0a80e7acc4a826261c5cca8872fc\transformed\appcompat-1.6.1\res
-com.clickpost.app-lifecycle-runtime-2.7.0-38 C:\Users\husain\.gradle\caches\transforms-4\68b0997b0616bf07131b02a341660ac0\transformed\lifecycle-runtime-2.7.0\res
-com.clickpost.app-lifecycle-livedata-core-2.7.0-39 C:\Users\husain\.gradle\caches\transforms-4\6964a120127b021fe5623559da2ae98a\transformed\lifecycle-livedata-core-2.7.0\res
-com.clickpost.app-room-ktx-2.6.1-40 C:\Users\husain\.gradle\caches\transforms-4\6f3493b9ff5725b02c6d903f8d55e503\transformed\room-ktx-2.6.1\res
-com.clickpost.app-activity-ktx-1.8.2-41 C:\Users\husain\.gradle\caches\transforms-4\7285a1d2f4a16b9477b186489775ac5d\transformed\activity-ktx-1.8.2\res
-com.clickpost.app-ui-test-manifest-1.6.1-42 C:\Users\husain\.gradle\caches\transforms-4\77827e88a751092793507ae397e5ef3e\transformed\ui-test-manifest-1.6.1\res
-com.clickpost.app-lifecycle-process-2.7.0-43 C:\Users\husain\.gradle\caches\transforms-4\7cdd8118c94ec1ee38cea16ceb3fbd5a\transformed\lifecycle-process-2.7.0\res
-com.clickpost.app-lifecycle-runtime-compose-2.7.0-44 C:\Users\husain\.gradle\caches\transforms-4\808eb7f1258513b07a4c303040287cb8\transformed\lifecycle-runtime-compose-2.7.0\res
-com.clickpost.app-activity-1.8.2-45 C:\Users\husain\.gradle\caches\transforms-4\8265d3f458779c76761d2b9083f061a2\transformed\activity-1.8.2\res
-com.clickpost.app-savedstate-1.2.1-46 C:\Users\husain\.gradle\caches\transforms-4\856d247b7ca4ef1feb170dc4f08e827f\transformed\savedstate-1.2.1\res
-com.clickpost.app-material3-release-47 C:\Users\husain\.gradle\caches\transforms-4\87257b66d544fc3bc6a297f704966a01\transformed\material3-release\res
-com.clickpost.app-core-runtime-2.2.0-48 C:\Users\husain\.gradle\caches\transforms-4\8a554b85b0fd12445ae8e4603657472d\transformed\core-runtime-2.2.0\res
-com.clickpost.app-profileinstaller-1.3.1-49 C:\Users\husain\.gradle\caches\transforms-4\9011a0c8cd2571db27f9f2c0ec40c3dd\transformed\profileinstaller-1.3.1\res
-com.clickpost.app-material-release-50 C:\Users\husain\.gradle\caches\transforms-4\91fadce592674585faa6aa785ccd2005\transformed\material-release\res
-com.clickpost.app-constraintlayout-2.0.1-51 C:\Users\husain\.gradle\caches\transforms-4\955af9a7e8e31397a894e243f255cbd5\transformed\constraintlayout-2.0.1\res
-com.clickpost.app-lifecycle-viewmodel-compose-2.7.0-52 C:\Users\husain\.gradle\caches\transforms-4\9960015a393525d8adccaa36a319ac0d\transformed\lifecycle-viewmodel-compose-2.7.0\res
-com.clickpost.app-datastore-preferences-1.0.0-53 C:\Users\husain\.gradle\caches\transforms-4\9983767ebf01a297f9024a09aa27345d\transformed\datastore-preferences-1.0.0\res
-com.clickpost.app-lifecycle-viewmodel-2.7.0-54 C:\Users\husain\.gradle\caches\transforms-4\9b7d60c564ad3f6bbd4773efcba1601f\transformed\lifecycle-viewmodel-2.7.0\res
-com.clickpost.app-core-ktx-1.12.0-55 C:\Users\husain\.gradle\caches\transforms-4\9fce95e4f26bd680084f6a165c6b925c\transformed\core-ktx-1.12.0\res
-com.clickpost.app-viewpager2-1.0.0-56 C:\Users\husain\.gradle\caches\transforms-4\a74d8162b257b964c2bc8cec5670df26\transformed\viewpager2-1.0.0\res
-com.clickpost.app-ui-graphics-release-57 C:\Users\husain\.gradle\caches\transforms-4\a8f6ddcaa0fb2c30e7843af7b0fb7a55\transformed\ui-graphics-release\res
-com.clickpost.app-hilt-navigation-compose-1.1.0-58 C:\Users\husain\.gradle\caches\transforms-4\b1908e1372149784925884bf6c7cd99d\transformed\hilt-navigation-compose-1.1.0\res
-com.clickpost.app-transition-1.2.0-59 C:\Users\husain\.gradle\caches\transforms-4\b8b09a5cd61784a70878a0fa774aa5c5\transformed\transition-1.2.0\res
-com.clickpost.app-customview-poolingcontainer-1.0.0-60 C:\Users\husain\.gradle\caches\transforms-4\ba5a71df829fe0faa542b8f7c9dec5d1\transformed\customview-poolingcontainer-1.0.0\res
-com.clickpost.app-ui-util-release-61 C:\Users\husain\.gradle\caches\transforms-4\bce05d90b42e9ef470710426563dfcac\transformed\ui-util-release\res
-com.clickpost.app-fragment-1.5.1-62 C:\Users\husain\.gradle\caches\transforms-4\bfc353f8d0cc5727e98347de61b635b5\transformed\fragment-1.5.1\res
-com.clickpost.app-foundation-layout-release-63 C:\Users\husain\.gradle\caches\transforms-4\c8d659e32cf31a08f2ea7d91a8633d15\transformed\foundation-layout-release\res
-com.clickpost.app-coordinatorlayout-1.1.0-64 C:\Users\husain\.gradle\caches\transforms-4\cb020f4c8d50bc92022be300603adfe3\transformed\coordinatorlayout-1.1.0\res
-com.clickpost.app-biometric-1.1.0-65 C:\Users\husain\.gradle\caches\transforms-4\cb5326701e35313a36a777f8c7445660\transformed\biometric-1.1.0\res
-com.clickpost.app-navigation-runtime-2.7.6-66 C:\Users\husain\.gradle\caches\transforms-4\d0faaf79ececf8390e41efe38616395d\transformed\navigation-runtime-2.7.6\res
-com.clickpost.app-activity-compose-1.8.2-67 C:\Users\husain\.gradle\caches\transforms-4\d16fe5b3a99cf84284534f448489fc02\transformed\activity-compose-1.8.2\res
-com.clickpost.app-material-icons-core-release-68 C:\Users\husain\.gradle\caches\transforms-4\d23d096e05f2c46627843e4d012ff737\transformed\material-icons-core-release\res
-com.clickpost.app-emoji2-1.3.0-69 C:\Users\husain\.gradle\caches\transforms-4\dcb36fac8eea6b0895b91d14862456db\transformed\emoji2-1.3.0\res
-com.clickpost.app-cardview-1.0.0-70 C:\Users\husain\.gradle\caches\transforms-4\e000b4c7b1cba05081873d1582ff6595\transformed\cardview-1.0.0\res
-com.clickpost.app-animation-release-71 C:\Users\husain\.gradle\caches\transforms-4\e051ab251d851025862d6df030932dc1\transformed\animation-release\res
-com.clickpost.app-core-1.12.0-72 C:\Users\husain\.gradle\caches\transforms-4\e154e426e312f7da22d1aa5e310ff2fe\transformed\core-1.12.0\res
-com.clickpost.app-ui-text-release-73 C:\Users\husain\.gradle\caches\transforms-4\e5e55c46fbc54456ffa1d622d639e854\transformed\ui-text-release\res
-com.clickpost.app-coil-base-2.6.0-74 C:\Users\husain\.gradle\caches\transforms-4\e929246cbc717f1d50b555adf6297d4d\transformed\coil-base-2.6.0\res
-com.clickpost.app-material-icons-extended-release-75 C:\Users\husain\.gradle\caches\transforms-4\e9aa42dccfeecaba93ac4abb64a31af1\transformed\material-icons-extended-release\res
-com.clickpost.app-ui-tooling-release-76 C:\Users\husain\.gradle\caches\transforms-4\ebf0a8b5d6cfdcc97f9c9c1b5e9ca139\transformed\ui-tooling-release\res
-com.clickpost.app-material-ripple-release-77 C:\Users\husain\.gradle\caches\transforms-4\ee3cc6dbe661916262f8df5c25acb0ff\transformed\material-ripple-release\res
-com.clickpost.app-sqlite-2.4.0-78 C:\Users\husain\.gradle\caches\transforms-4\eeb4c897f8e1fd4b9bfe641a9f2fad4c\transformed\sqlite-2.4.0\res
-com.clickpost.app-media3-exoplayer-1.3.1-79 C:\Users\husain\.gradle\caches\transforms-4\f8dc0c52d4167c6710e5bb5fdf5e14a3\transformed\media3-exoplayer-1.3.1\res
-com.clickpost.app-recyclerview-1.1.0-80 C:\Users\husain\.gradle\caches\transforms-4\fb3e06c6ed57e23e060a187b2f491a11\transformed\recyclerview-1.1.0\res
+com.clickpost.app-play-services-base-18.5.0-23 C:\Users\husain\.gradle\caches\transforms-4\3be62a7a1f40a9733b8af742ab8a86ae\transformed\play-services-base-18.5.0\res
+com.clickpost.app-room-runtime-2.6.1-24 C:\Users\husain\.gradle\caches\transforms-4\3d46b77ee75387ee246249f24c339568\transformed\room-runtime-2.6.1\res
+com.clickpost.app-lifecycle-livedata-core-ktx-2.7.0-25 C:\Users\husain\.gradle\caches\transforms-4\433025e20b39ef28f133538615f2f24d\transformed\lifecycle-livedata-core-ktx-2.7.0\res
+com.clickpost.app-sqlite-framework-2.4.0-26 C:\Users\husain\.gradle\caches\transforms-4\43d29131fa81094cc65b2f3f437acc3c\transformed\sqlite-framework-2.4.0\res
+com.clickpost.app-core-splashscreen-1.0.1-27 C:\Users\husain\.gradle\caches\transforms-4\4d1bac077b5e1cdcdd93a823932d4ab6\transformed\core-splashscreen-1.0.1\res
+com.clickpost.app-lifecycle-service-2.7.0-28 C:\Users\husain\.gradle\caches\transforms-4\4d88764cbf16d3956090c771c386d840\transformed\lifecycle-service-2.7.0\res
+com.clickpost.app-navigation-runtime-ktx-2.7.6-29 C:\Users\husain\.gradle\caches\transforms-4\51e91330585b99261fb7d4390e4dfa08\transformed\navigation-runtime-ktx-2.7.6\res
+com.clickpost.app-material-1.11.0-30 C:\Users\husain\.gradle\caches\transforms-4\54f5c18f65c9953971fad543484d5382\transformed\material-1.11.0\res
+com.clickpost.app-play-services-basement-18.4.0-31 C:\Users\husain\.gradle\caches\transforms-4\56b0a3a2eb944286b5d8bd3026b3a649\transformed\play-services-basement-18.4.0\res
+com.clickpost.app-ui-unit-release-32 C:\Users\husain\.gradle\caches\transforms-4\57c10acd775a78c4d0c15591be01ee31\transformed\ui-unit-release\res
+com.clickpost.app-ui-geometry-release-33 C:\Users\husain\.gradle\caches\transforms-4\580887367660ac600fa02179aa8ec147\transformed\ui-geometry-release\res
+com.clickpost.app-savedstate-ktx-1.2.1-34 C:\Users\husain\.gradle\caches\transforms-4\59417e57c468ad77995b7ea2d86772a4\transformed\savedstate-ktx-1.2.1\res
+com.clickpost.app-runtime-release-35 C:\Users\husain\.gradle\caches\transforms-4\59e5276cddb11c7a550cb689c8623bb1\transformed\runtime-release\res
+com.clickpost.app-animation-core-release-36 C:\Users\husain\.gradle\caches\transforms-4\5a8da487f6a594df1b5925f15c44be8f\transformed\animation-core-release\res
+com.clickpost.app-foundation-release-37 C:\Users\husain\.gradle\caches\transforms-4\5f88591788c7963ab413473e16590e03\transformed\foundation-release\res
+com.clickpost.app-ui-tooling-data-release-38 C:\Users\husain\.gradle\caches\transforms-4\633b80a602d2547663da5a470aa46939\transformed\ui-tooling-data-release\res
+com.clickpost.app-appcompat-resources-1.6.1-39 C:\Users\husain\.gradle\caches\transforms-4\64be31f3501828540cab76531b203508\transformed\appcompat-resources-1.6.1\res
+com.clickpost.app-appcompat-1.6.1-40 C:\Users\husain\.gradle\caches\transforms-4\66ac0a80e7acc4a826261c5cca8872fc\transformed\appcompat-1.6.1\res
+com.clickpost.app-lifecycle-runtime-2.7.0-41 C:\Users\husain\.gradle\caches\transforms-4\68b0997b0616bf07131b02a341660ac0\transformed\lifecycle-runtime-2.7.0\res
+com.clickpost.app-lifecycle-livedata-core-2.7.0-42 C:\Users\husain\.gradle\caches\transforms-4\6964a120127b021fe5623559da2ae98a\transformed\lifecycle-livedata-core-2.7.0\res
+com.clickpost.app-room-ktx-2.6.1-43 C:\Users\husain\.gradle\caches\transforms-4\6f3493b9ff5725b02c6d903f8d55e503\transformed\room-ktx-2.6.1\res
+com.clickpost.app-activity-ktx-1.8.2-44 C:\Users\husain\.gradle\caches\transforms-4\7285a1d2f4a16b9477b186489775ac5d\transformed\activity-ktx-1.8.2\res
+com.clickpost.app-ui-test-manifest-1.6.1-45 C:\Users\husain\.gradle\caches\transforms-4\77827e88a751092793507ae397e5ef3e\transformed\ui-test-manifest-1.6.1\res
+com.clickpost.app-lifecycle-process-2.7.0-46 C:\Users\husain\.gradle\caches\transforms-4\7cdd8118c94ec1ee38cea16ceb3fbd5a\transformed\lifecycle-process-2.7.0\res
+com.clickpost.app-lifecycle-runtime-compose-2.7.0-47 C:\Users\husain\.gradle\caches\transforms-4\808eb7f1258513b07a4c303040287cb8\transformed\lifecycle-runtime-compose-2.7.0\res
+com.clickpost.app-activity-1.8.2-48 C:\Users\husain\.gradle\caches\transforms-4\8265d3f458779c76761d2b9083f061a2\transformed\activity-1.8.2\res
+com.clickpost.app-savedstate-1.2.1-49 C:\Users\husain\.gradle\caches\transforms-4\856d247b7ca4ef1feb170dc4f08e827f\transformed\savedstate-1.2.1\res
+com.clickpost.app-material3-release-50 C:\Users\husain\.gradle\caches\transforms-4\87257b66d544fc3bc6a297f704966a01\transformed\material3-release\res
+com.clickpost.app-core-runtime-2.2.0-51 C:\Users\husain\.gradle\caches\transforms-4\8a554b85b0fd12445ae8e4603657472d\transformed\core-runtime-2.2.0\res
+com.clickpost.app-hilt-work-1.2.0-52 C:\Users\husain\.gradle\caches\transforms-4\8b0a580263a91b53643ee4eae9757146\transformed\hilt-work-1.2.0\res
+com.clickpost.app-profileinstaller-1.3.1-53 C:\Users\husain\.gradle\caches\transforms-4\9011a0c8cd2571db27f9f2c0ec40c3dd\transformed\profileinstaller-1.3.1\res
+com.clickpost.app-material-release-54 C:\Users\husain\.gradle\caches\transforms-4\91fadce592674585faa6aa785ccd2005\transformed\material-release\res
+com.clickpost.app-constraintlayout-2.0.1-55 C:\Users\husain\.gradle\caches\transforms-4\955af9a7e8e31397a894e243f255cbd5\transformed\constraintlayout-2.0.1\res
+com.clickpost.app-lifecycle-viewmodel-compose-2.7.0-56 C:\Users\husain\.gradle\caches\transforms-4\9960015a393525d8adccaa36a319ac0d\transformed\lifecycle-viewmodel-compose-2.7.0\res
+com.clickpost.app-datastore-preferences-1.0.0-57 C:\Users\husain\.gradle\caches\transforms-4\9983767ebf01a297f9024a09aa27345d\transformed\datastore-preferences-1.0.0\res
+com.clickpost.app-lifecycle-viewmodel-2.7.0-58 C:\Users\husain\.gradle\caches\transforms-4\9b7d60c564ad3f6bbd4773efcba1601f\transformed\lifecycle-viewmodel-2.7.0\res
+com.clickpost.app-core-ktx-1.12.0-59 C:\Users\husain\.gradle\caches\transforms-4\9fce95e4f26bd680084f6a165c6b925c\transformed\core-ktx-1.12.0\res
+com.clickpost.app-viewpager2-1.0.0-60 C:\Users\husain\.gradle\caches\transforms-4\a74d8162b257b964c2bc8cec5670df26\transformed\viewpager2-1.0.0\res
+com.clickpost.app-ui-graphics-release-61 C:\Users\husain\.gradle\caches\transforms-4\a8f6ddcaa0fb2c30e7843af7b0fb7a55\transformed\ui-graphics-release\res
+com.clickpost.app-hilt-navigation-compose-1.1.0-62 C:\Users\husain\.gradle\caches\transforms-4\b1908e1372149784925884bf6c7cd99d\transformed\hilt-navigation-compose-1.1.0\res
+com.clickpost.app-work-runtime-ktx-2.9.0-63 C:\Users\husain\.gradle\caches\transforms-4\b32de792078aa67eae5df0ca8d23f974\transformed\work-runtime-ktx-2.9.0\res
+com.clickpost.app-transition-1.2.0-64 C:\Users\husain\.gradle\caches\transforms-4\b8b09a5cd61784a70878a0fa774aa5c5\transformed\transition-1.2.0\res
+com.clickpost.app-customview-poolingcontainer-1.0.0-65 C:\Users\husain\.gradle\caches\transforms-4\ba5a71df829fe0faa542b8f7c9dec5d1\transformed\customview-poolingcontainer-1.0.0\res
+com.clickpost.app-ui-util-release-66 C:\Users\husain\.gradle\caches\transforms-4\bce05d90b42e9ef470710426563dfcac\transformed\ui-util-release\res
+com.clickpost.app-fragment-1.5.1-67 C:\Users\husain\.gradle\caches\transforms-4\bfc353f8d0cc5727e98347de61b635b5\transformed\fragment-1.5.1\res
+com.clickpost.app-foundation-layout-release-68 C:\Users\husain\.gradle\caches\transforms-4\c8d659e32cf31a08f2ea7d91a8633d15\transformed\foundation-layout-release\res
+com.clickpost.app-coordinatorlayout-1.1.0-69 C:\Users\husain\.gradle\caches\transforms-4\cb020f4c8d50bc92022be300603adfe3\transformed\coordinatorlayout-1.1.0\res
+com.clickpost.app-biometric-1.1.0-70 C:\Users\husain\.gradle\caches\transforms-4\cb5326701e35313a36a777f8c7445660\transformed\biometric-1.1.0\res
+com.clickpost.app-navigation-runtime-2.7.6-71 C:\Users\husain\.gradle\caches\transforms-4\d0faaf79ececf8390e41efe38616395d\transformed\navigation-runtime-2.7.6\res
+com.clickpost.app-activity-compose-1.8.2-72 C:\Users\husain\.gradle\caches\transforms-4\d16fe5b3a99cf84284534f448489fc02\transformed\activity-compose-1.8.2\res
+com.clickpost.app-material-icons-core-release-73 C:\Users\husain\.gradle\caches\transforms-4\d23d096e05f2c46627843e4d012ff737\transformed\material-icons-core-release\res
+com.clickpost.app-emoji2-1.3.0-74 C:\Users\husain\.gradle\caches\transforms-4\dcb36fac8eea6b0895b91d14862456db\transformed\emoji2-1.3.0\res
+com.clickpost.app-cardview-1.0.0-75 C:\Users\husain\.gradle\caches\transforms-4\e000b4c7b1cba05081873d1582ff6595\transformed\cardview-1.0.0\res
+com.clickpost.app-animation-release-76 C:\Users\husain\.gradle\caches\transforms-4\e051ab251d851025862d6df030932dc1\transformed\animation-release\res
+com.clickpost.app-core-1.12.0-77 C:\Users\husain\.gradle\caches\transforms-4\e154e426e312f7da22d1aa5e310ff2fe\transformed\core-1.12.0\res
+com.clickpost.app-work-runtime-2.9.0-78 C:\Users\husain\.gradle\caches\transforms-4\e4a8f5e413df026b2960d8a16d13eebc\transformed\work-runtime-2.9.0\res
+com.clickpost.app-ui-text-release-79 C:\Users\husain\.gradle\caches\transforms-4\e5e55c46fbc54456ffa1d622d639e854\transformed\ui-text-release\res
+com.clickpost.app-coil-base-2.6.0-80 C:\Users\husain\.gradle\caches\transforms-4\e929246cbc717f1d50b555adf6297d4d\transformed\coil-base-2.6.0\res
+com.clickpost.app-material-icons-extended-release-81 C:\Users\husain\.gradle\caches\transforms-4\e9aa42dccfeecaba93ac4abb64a31af1\transformed\material-icons-extended-release\res
+com.clickpost.app-ui-tooling-release-82 C:\Users\husain\.gradle\caches\transforms-4\ebf0a8b5d6cfdcc97f9c9c1b5e9ca139\transformed\ui-tooling-release\res
+com.clickpost.app-material-ripple-release-83 C:\Users\husain\.gradle\caches\transforms-4\ee3cc6dbe661916262f8df5c25acb0ff\transformed\material-ripple-release\res
+com.clickpost.app-sqlite-2.4.0-84 C:\Users\husain\.gradle\caches\transforms-4\eeb4c897f8e1fd4b9bfe641a9f2fad4c\transformed\sqlite-2.4.0\res
+com.clickpost.app-media3-exoplayer-1.3.1-85 C:\Users\husain\.gradle\caches\transforms-4\f8dc0c52d4167c6710e5bb5fdf5e14a3\transformed\media3-exoplayer-1.3.1\res
+com.clickpost.app-recyclerview-1.1.0-86 C:\Users\husain\.gradle\caches\transforms-4\fb3e06c6ed57e23e060a187b2f491a11\transformed\recyclerview-1.1.0\res

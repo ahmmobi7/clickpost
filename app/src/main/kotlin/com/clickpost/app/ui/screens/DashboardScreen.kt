@@ -50,7 +50,8 @@ import com.clickpost.app.viewmodel.MainViewModel
 fun DashboardScreen(
     viewModel: MainViewModel,
     onVideoSelected: () -> Unit,
-    onEditProfile: () -> Unit
+    onEditProfile: () -> Unit,
+    onPromoDashboard: () -> Unit
 ) {
     val uiState by viewModel.uiState.collectAsState()
     val profile = uiState.brandProfile
@@ -348,6 +349,12 @@ fun DashboardScreen(
                     GradientButton(
                         text = "Select Video",
                         onClick = { videoPicker.launch("video/*") },
+                        enabled = uiState.hasProfile
+                    )
+
+                    GradientButton(
+                        text = "Promo Video Generator",
+                        onClick = onPromoDashboard,
                         enabled = uiState.hasProfile
                     )
 

@@ -1,15 +1,21 @@
 package com.clickpost.app.promo.viewmodel
 
+import android.content.Context
+import android.net.Uri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.work.OneTimeWorkRequestBuilder
+import androidx.work.WorkInfo
 import androidx.work.WorkManager
 import androidx.work.workDataOf
 import com.clickpost.app.promo.data.*
 import com.clickpost.app.promo.worker.PromoWorker
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
+import java.io.File
+import java.io.FileOutputStream
 import javax.inject.Inject
 
 data class PromoUiState(
@@ -30,64 +36,95 @@ data class PromoUiState(
 @HiltViewModel
 class PromoViewModel @Inject constructor(
     private val repository: PromoRepository,
-    private val workManager: WorkManager
+    private val workManager: WorkManager,
+    @ApplicationContext private val context: Context
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(PromoUiState())
     val uiState: StateFlow<PromoUiState> = _uiState.asStateFlow()
 
+    val activeWorkInfo: StateFlow<List<WorkInfo>> = workManager
+        .getWorkInfosByTagFlow("PromoWorker")
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
+
     init {
-        viewModelScope.launch {
-            combine(
-                repository.getAllHookVideos(),
-                repository.getAllProductAssets(),
-                repository.getAllModelImages(),
-                repository.getAllGeneratedPromos(),
-                repository.getAllMusic()
-            ) { hook, product, model, generated, music ->
-                PromoUiState(
+        combine(
+            repository.getAllHookVideos(),
+            repository.getAllProductAssets(),
+            repository.getAllModelImages(),
+            repository.getAllGeneratedPromos(),
+            repository.getAllMusic()
+        ) { hook, product, model, generated, music ->
+            _uiState.update { state ->
+                state.copy(
                     hookVideos = hook,
                     productAssets = product,
                     modelImages = model,
                     generatedPromos = generated,
-                    musicList = music
+                    musicList = music,
+                    // Auto-select the latest if none selected
+                    selectedHookVideo = state.selectedHookVideo ?: hook.lastOrNull(),
+                    selectedModelImage = state.selectedModelImage ?: model.lastOrNull(),
+                    selectedMusic = state.selectedMusic ?: music.lastOrNull()
                 )
-            }.collect {
-                _uiState.value = it
             }
-        }
+        }.launchIn(viewModelScope)
+
+        // Monitor work status
+        activeWorkInfo.onEach { workInfos ->
+            val isProcessing = workInfos.any { it.state == WorkInfo.State.ENQUEUED || it.state == WorkInfo.State.RUNNING }
+            _uiState.update { it.copy(isProcessing = isProcessing) }
+        }.launchIn(viewModelScope)
     }
 
-    fun selectHookVideo(uri: String) {
+    fun selectHookVideo(uriString: String) {
         viewModelScope.launch {
-            val hook = HookVideo(uri = uri)
+            val internalUri = copyToInternalStorage(uriString, "hook_video.mp4")
+            val hook = HookVideo(uri = internalUri)
             repository.insertHookVideo(hook)
             _uiState.update { it.copy(selectedHookVideo = hook) }
         }
     }
 
-    fun addProductAsset(uri: String, type: String, description: String) {
+    fun addProductAsset(uriString: String, type: String, description: String) {
         viewModelScope.launch {
-            val asset = ProductAsset(uri = uri, type = type, description = description)
+            val fileName = "product_asset_${System.currentTimeMillis()}.png"
+            val internalUri = copyToInternalStorage(uriString, fileName)
+            val asset = ProductAsset(uri = internalUri, type = type, description = description)
             repository.insertProductAsset(asset)
             _uiState.update { it.copy(selectedProductAssets = it.selectedProductAssets + asset) }
         }
     }
 
-    fun selectModelImage(uri: String) {
+    fun selectModelImage(uriString: String) {
         viewModelScope.launch {
-            val model = ModelImage(uri = uri)
+            val internalUri = copyToInternalStorage(uriString, "model_image.png")
+            val model = ModelImage(uri = internalUri)
             repository.insertModelImage(model)
             _uiState.update { it.copy(selectedModelImage = model) }
         }
     }
 
-    fun selectMusic(uri: String, name: String) {
+    fun selectMusic(uriString: String, name: String) {
         viewModelScope.launch {
-            val music = PromoMusic(uri = uri, name = name)
+            val internalUri = copyToInternalStorage(uriString, "background_music.mp3")
+            val music = PromoMusic(uri = internalUri, name = name)
             repository.insertMusic(music)
             _uiState.update { it.copy(selectedMusic = music) }
         }
+    }
+
+    private fun copyToInternalStorage(uriString: String, fileName: String): String {
+        val uri = Uri.parse(uriString)
+        val destFile = File(context.filesDir, "promo_assets/$fileName")
+        destFile.parentFile?.mkdirs()
+        
+        context.contentResolver.openInputStream(uri)?.use { input ->
+            FileOutputStream(destFile).use { output ->
+                input.copyTo(output)
+            }
+        } ?: return uriString // Fallback to original if copy fails
+        return "file://${destFile.absolutePath}"
     }
 
     fun deletePromo(promo: GeneratedPromo) {

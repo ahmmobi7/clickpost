@@ -2,20 +2,40 @@ package com.clickpost.app;
 
 import android.app.Activity;
 import android.app.Service;
+import android.content.Context;
 import android.view.View;
 import androidx.fragment.app.Fragment;
+import androidx.hilt.work.HiltWorkerFactory;
+import androidx.hilt.work.WorkerAssistedFactory;
+import androidx.hilt.work.WorkerFactoryModule_ProvideFactoryFactory;
 import androidx.lifecycle.SavedStateHandle;
 import androidx.lifecycle.ViewModel;
+import androidx.work.ListenableWorker;
+import androidx.work.WorkManager;
+import androidx.work.WorkerParameters;
 import com.clickpost.app.data.repository.ProfileRepository;
 import com.clickpost.app.di.AppModule_ProvideBrandingEngineFactory;
 import com.clickpost.app.di.AppModule_ProvideDeviceCapabilityCheckerFactory;
 import com.clickpost.app.di.AppModule_ProvideExportEngineFactory;
 import com.clickpost.app.di.AppModule_ProvideShareEngineFactory;
 import com.clickpost.app.di.AppModule_ProvideStorageManagerFactory;
+import com.clickpost.app.di.AppModule_ProvideWorkManagerFactory;
 import com.clickpost.app.engine.BrandingEngine;
 import com.clickpost.app.engine.DeviceCapabilityChecker;
 import com.clickpost.app.engine.ExportEngine;
 import com.clickpost.app.engine.ShareEngine;
+import com.clickpost.app.promo.data.PromoDao;
+import com.clickpost.app.promo.data.PromoRepository;
+import com.clickpost.app.promo.db.PromoDatabase;
+import com.clickpost.app.promo.di.PromoModule_ProvidePromoDaoFactory;
+import com.clickpost.app.promo.di.PromoModule_ProvidePromoDatabaseFactory;
+import com.clickpost.app.promo.engine.BackgroundRemover;
+import com.clickpost.app.promo.engine.ImageBlender;
+import com.clickpost.app.promo.engine.PromoVideoEngine;
+import com.clickpost.app.promo.viewmodel.PromoViewModel;
+import com.clickpost.app.promo.viewmodel.PromoViewModel_HiltModules_KeyModule_ProvideFactory;
+import com.clickpost.app.promo.worker.PromoWorker;
+import com.clickpost.app.promo.worker.PromoWorker_AssistedFactory;
 import com.clickpost.app.social.data.Platform;
 import com.clickpost.app.social.db.PublishJobDao;
 import com.clickpost.app.social.db.SocialDatabase;
@@ -43,6 +63,7 @@ import com.clickpost.app.viewmodel.MainViewModel;
 import com.clickpost.app.viewmodel.MainViewModel_HiltModules_KeyModule_ProvideFactory;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
+import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import dagger.hilt.android.ActivityRetainedLifecycle;
 import dagger.hilt.android.ViewModelLifecycle;
 import dagger.hilt.android.internal.builders.ActivityComponentBuilder;
@@ -63,6 +84,7 @@ import dagger.internal.DaggerGenerated;
 import dagger.internal.DoubleCheck;
 import dagger.internal.Preconditions;
 import dagger.internal.Provider;
+import dagger.internal.SingleCheck;
 import java.util.Map;
 import java.util.Set;
 import javax.annotation.processing.Generated;
@@ -398,7 +420,7 @@ public final class DaggerClickPostApp_HiltComponents_SingletonC {
 
     @Override
     public Set<String> getViewModelKeys() {
-      return ImmutableSet.<String>of(AccountGroupViewModel_HiltModules_KeyModule_ProvideFactory.provide(), MainViewModel_HiltModules_KeyModule_ProvideFactory.provide(), PublishViewModel_HiltModules_KeyModule_ProvideFactory.provide());
+      return ImmutableSet.<String>of(AccountGroupViewModel_HiltModules_KeyModule_ProvideFactory.provide(), MainViewModel_HiltModules_KeyModule_ProvideFactory.provide(), PromoViewModel_HiltModules_KeyModule_ProvideFactory.provide(), PublishViewModel_HiltModules_KeyModule_ProvideFactory.provide());
     }
 
     @Override
@@ -428,6 +450,8 @@ public final class DaggerClickPostApp_HiltComponents_SingletonC {
 
     private Provider<MainViewModel> mainViewModelProvider;
 
+    private Provider<PromoViewModel> promoViewModelProvider;
+
     private Provider<PublishViewModel> publishViewModelProvider;
 
     private ViewModelCImpl(SingletonCImpl singletonCImpl,
@@ -449,12 +473,13 @@ public final class DaggerClickPostApp_HiltComponents_SingletonC {
         final ViewModelLifecycle viewModelLifecycleParam) {
       this.accountGroupViewModelProvider = new SwitchingProvider<>(singletonCImpl, activityRetainedCImpl, viewModelCImpl, 0);
       this.mainViewModelProvider = new SwitchingProvider<>(singletonCImpl, activityRetainedCImpl, viewModelCImpl, 1);
-      this.publishViewModelProvider = new SwitchingProvider<>(singletonCImpl, activityRetainedCImpl, viewModelCImpl, 2);
+      this.promoViewModelProvider = new SwitchingProvider<>(singletonCImpl, activityRetainedCImpl, viewModelCImpl, 2);
+      this.publishViewModelProvider = new SwitchingProvider<>(singletonCImpl, activityRetainedCImpl, viewModelCImpl, 3);
     }
 
     @Override
     public Map<String, javax.inject.Provider<ViewModel>> getHiltViewModelMap() {
-      return ImmutableMap.<String, javax.inject.Provider<ViewModel>>of("com.clickpost.app.social.viewmodel.AccountGroupViewModel", ((Provider) accountGroupViewModelProvider), "com.clickpost.app.viewmodel.MainViewModel", ((Provider) mainViewModelProvider), "com.clickpost.app.social.viewmodel.PublishViewModel", ((Provider) publishViewModelProvider));
+      return ImmutableMap.<String, javax.inject.Provider<ViewModel>>of("com.clickpost.app.social.viewmodel.AccountGroupViewModel", ((Provider) accountGroupViewModelProvider), "com.clickpost.app.viewmodel.MainViewModel", ((Provider) mainViewModelProvider), "com.clickpost.app.promo.viewmodel.PromoViewModel", ((Provider) promoViewModelProvider), "com.clickpost.app.social.viewmodel.PublishViewModel", ((Provider) publishViewModelProvider));
     }
 
     @Override
@@ -489,7 +514,10 @@ public final class DaggerClickPostApp_HiltComponents_SingletonC {
           case 1: // com.clickpost.app.viewmodel.MainViewModel 
           return (T) new MainViewModel(ApplicationContextModule_ProvideApplicationFactory.provideApplication(singletonCImpl.applicationContextModule), singletonCImpl.profileRepositoryProvider.get(), singletonCImpl.provideStorageManagerProvider.get(), singletonCImpl.provideBrandingEngineProvider.get(), singletonCImpl.provideExportEngineProvider.get(), singletonCImpl.provideShareEngineProvider.get(), singletonCImpl.provideDeviceCapabilityCheckerProvider.get());
 
-          case 2: // com.clickpost.app.social.viewmodel.PublishViewModel 
+          case 2: // com.clickpost.app.promo.viewmodel.PromoViewModel 
+          return (T) new PromoViewModel(singletonCImpl.promoRepositoryProvider.get(), singletonCImpl.provideWorkManagerProvider.get(), ApplicationContextModule_ProvideContextFactory.provideContext(singletonCImpl.applicationContextModule));
+
+          case 3: // com.clickpost.app.social.viewmodel.PublishViewModel 
           return (T) new PublishViewModel(singletonCImpl.providePublishEngineProvider.get(), singletonCImpl.provideAccountGroupRepositoryProvider.get(), singletonCImpl.providePublishHistoryRepositoryProvider.get());
 
           default: throw new AssertionError(id);
@@ -572,6 +600,20 @@ public final class DaggerClickPostApp_HiltComponents_SingletonC {
 
     private final SingletonCImpl singletonCImpl = this;
 
+    private Provider<BackgroundRemover> backgroundRemoverProvider;
+
+    private Provider<ImageBlender> imageBlenderProvider;
+
+    private Provider<PromoVideoEngine> promoVideoEngineProvider;
+
+    private Provider<PromoDatabase> providePromoDatabaseProvider;
+
+    private Provider<PromoDao> providePromoDaoProvider;
+
+    private Provider<PromoRepository> promoRepositoryProvider;
+
+    private Provider<PromoWorker_AssistedFactory> promoWorker_AssistedFactoryProvider;
+
     private Provider<CredentialVault> provideCredentialVaultProvider;
 
     private Provider<AccountGroupRepository> provideAccountGroupRepositoryProvider;
@@ -596,6 +638,8 @@ public final class DaggerClickPostApp_HiltComponents_SingletonC {
 
     private Provider<DeviceCapabilityChecker> provideDeviceCapabilityCheckerProvider;
 
+    private Provider<WorkManager> provideWorkManagerProvider;
+
     private Provider<SocialDatabase> provideSocialDatabaseProvider;
 
     private Provider<PublishJobDao> providePublishJobDaoProvider;
@@ -610,32 +654,50 @@ public final class DaggerClickPostApp_HiltComponents_SingletonC {
 
     }
 
+    private Map<String, javax.inject.Provider<WorkerAssistedFactory<? extends ListenableWorker>>> mapOfStringAndProviderOfWorkerAssistedFactoryOf(
+        ) {
+      return ImmutableMap.<String, javax.inject.Provider<WorkerAssistedFactory<? extends ListenableWorker>>>of("com.clickpost.app.promo.worker.PromoWorker", ((Provider) promoWorker_AssistedFactoryProvider));
+    }
+
+    private HiltWorkerFactory hiltWorkerFactory() {
+      return WorkerFactoryModule_ProvideFactoryFactory.provideFactory(mapOfStringAndProviderOfWorkerAssistedFactoryOf());
+    }
+
     private Map<Platform, PlatformAdapter> mapOfPlatformAndPlatformAdapter() {
       return ImmutableMap.<Platform, PlatformAdapter>of(Platform.TIKTOK, provideTikTokAdapterProvider.get(), Platform.FACEBOOK, provideFacebookAdapterProvider.get(), Platform.INSTAGRAM, provideInstagramAdapterProvider.get(), Platform.YOUTUBE, provideYouTubeAdapterProvider.get());
     }
 
     @SuppressWarnings("unchecked")
     private void initialize(final ApplicationContextModule applicationContextModuleParam) {
-      this.provideCredentialVaultProvider = DoubleCheck.provider(new SwitchingProvider<CredentialVault>(singletonCImpl, 1));
-      this.provideAccountGroupRepositoryProvider = DoubleCheck.provider(new SwitchingProvider<AccountGroupRepository>(singletonCImpl, 0));
-      this.provideTikTokAdapterProvider = DoubleCheck.provider(new SwitchingProvider<PlatformAdapter>(singletonCImpl, 2));
-      this.provideFacebookAdapterProvider = DoubleCheck.provider(new SwitchingProvider<PlatformAdapter>(singletonCImpl, 3));
-      this.provideInstagramAdapterProvider = DoubleCheck.provider(new SwitchingProvider<PlatformAdapter>(singletonCImpl, 4));
-      this.provideYouTubeAdapterProvider = DoubleCheck.provider(new SwitchingProvider<PlatformAdapter>(singletonCImpl, 5));
-      this.profileRepositoryProvider = DoubleCheck.provider(new SwitchingProvider<ProfileRepository>(singletonCImpl, 6));
-      this.provideStorageManagerProvider = DoubleCheck.provider(new SwitchingProvider<StorageManager>(singletonCImpl, 7));
-      this.provideBrandingEngineProvider = DoubleCheck.provider(new SwitchingProvider<BrandingEngine>(singletonCImpl, 8));
-      this.provideExportEngineProvider = DoubleCheck.provider(new SwitchingProvider<ExportEngine>(singletonCImpl, 9));
-      this.provideShareEngineProvider = DoubleCheck.provider(new SwitchingProvider<ShareEngine>(singletonCImpl, 10));
-      this.provideDeviceCapabilityCheckerProvider = DoubleCheck.provider(new SwitchingProvider<DeviceCapabilityChecker>(singletonCImpl, 11));
-      this.provideSocialDatabaseProvider = DoubleCheck.provider(new SwitchingProvider<SocialDatabase>(singletonCImpl, 15));
-      this.providePublishJobDaoProvider = DoubleCheck.provider(new SwitchingProvider<PublishJobDao>(singletonCImpl, 14));
-      this.providePublishHistoryRepositoryProvider = DoubleCheck.provider(new SwitchingProvider<PublishHistoryRepository>(singletonCImpl, 13));
-      this.providePublishEngineProvider = DoubleCheck.provider(new SwitchingProvider<PublishEngine>(singletonCImpl, 12));
+      this.backgroundRemoverProvider = DoubleCheck.provider(new SwitchingProvider<BackgroundRemover>(singletonCImpl, 1));
+      this.imageBlenderProvider = DoubleCheck.provider(new SwitchingProvider<ImageBlender>(singletonCImpl, 2));
+      this.promoVideoEngineProvider = DoubleCheck.provider(new SwitchingProvider<PromoVideoEngine>(singletonCImpl, 3));
+      this.providePromoDatabaseProvider = DoubleCheck.provider(new SwitchingProvider<PromoDatabase>(singletonCImpl, 6));
+      this.providePromoDaoProvider = DoubleCheck.provider(new SwitchingProvider<PromoDao>(singletonCImpl, 5));
+      this.promoRepositoryProvider = DoubleCheck.provider(new SwitchingProvider<PromoRepository>(singletonCImpl, 4));
+      this.promoWorker_AssistedFactoryProvider = SingleCheck.provider(new SwitchingProvider<PromoWorker_AssistedFactory>(singletonCImpl, 0));
+      this.provideCredentialVaultProvider = DoubleCheck.provider(new SwitchingProvider<CredentialVault>(singletonCImpl, 8));
+      this.provideAccountGroupRepositoryProvider = DoubleCheck.provider(new SwitchingProvider<AccountGroupRepository>(singletonCImpl, 7));
+      this.provideTikTokAdapterProvider = DoubleCheck.provider(new SwitchingProvider<PlatformAdapter>(singletonCImpl, 9));
+      this.provideFacebookAdapterProvider = DoubleCheck.provider(new SwitchingProvider<PlatformAdapter>(singletonCImpl, 10));
+      this.provideInstagramAdapterProvider = DoubleCheck.provider(new SwitchingProvider<PlatformAdapter>(singletonCImpl, 11));
+      this.provideYouTubeAdapterProvider = DoubleCheck.provider(new SwitchingProvider<PlatformAdapter>(singletonCImpl, 12));
+      this.profileRepositoryProvider = DoubleCheck.provider(new SwitchingProvider<ProfileRepository>(singletonCImpl, 13));
+      this.provideStorageManagerProvider = DoubleCheck.provider(new SwitchingProvider<StorageManager>(singletonCImpl, 14));
+      this.provideBrandingEngineProvider = DoubleCheck.provider(new SwitchingProvider<BrandingEngine>(singletonCImpl, 15));
+      this.provideExportEngineProvider = DoubleCheck.provider(new SwitchingProvider<ExportEngine>(singletonCImpl, 16));
+      this.provideShareEngineProvider = DoubleCheck.provider(new SwitchingProvider<ShareEngine>(singletonCImpl, 17));
+      this.provideDeviceCapabilityCheckerProvider = DoubleCheck.provider(new SwitchingProvider<DeviceCapabilityChecker>(singletonCImpl, 18));
+      this.provideWorkManagerProvider = DoubleCheck.provider(new SwitchingProvider<WorkManager>(singletonCImpl, 19));
+      this.provideSocialDatabaseProvider = DoubleCheck.provider(new SwitchingProvider<SocialDatabase>(singletonCImpl, 23));
+      this.providePublishJobDaoProvider = DoubleCheck.provider(new SwitchingProvider<PublishJobDao>(singletonCImpl, 22));
+      this.providePublishHistoryRepositoryProvider = DoubleCheck.provider(new SwitchingProvider<PublishHistoryRepository>(singletonCImpl, 21));
+      this.providePublishEngineProvider = DoubleCheck.provider(new SwitchingProvider<PublishEngine>(singletonCImpl, 20));
     }
 
     @Override
     public void injectClickPostApp(ClickPostApp clickPostApp) {
+      injectClickPostApp2(clickPostApp);
     }
 
     @Override
@@ -653,6 +715,12 @@ public final class DaggerClickPostApp_HiltComponents_SingletonC {
       return new ServiceCBuilder(singletonCImpl);
     }
 
+    @CanIgnoreReturnValue
+    private ClickPostApp injectClickPostApp2(ClickPostApp instance) {
+      ClickPostApp_MembersInjector.injectWorkerFactory(instance, hiltWorkerFactory());
+      return instance;
+    }
+
     private static final class SwitchingProvider<T> implements Provider<T> {
       private final SingletonCImpl singletonCImpl;
 
@@ -667,52 +735,81 @@ public final class DaggerClickPostApp_HiltComponents_SingletonC {
       @Override
       public T get() {
         switch (id) {
-          case 0: // com.clickpost.app.social.repository.AccountGroupRepository 
+          case 0: // com.clickpost.app.promo.worker.PromoWorker_AssistedFactory 
+          return (T) new PromoWorker_AssistedFactory() {
+            @Override
+            public PromoWorker create(Context context, WorkerParameters params) {
+              return new PromoWorker(context, params, singletonCImpl.backgroundRemoverProvider.get(), singletonCImpl.imageBlenderProvider.get(), singletonCImpl.promoVideoEngineProvider.get(), singletonCImpl.promoRepositoryProvider.get());
+            }
+          };
+
+          case 1: // com.clickpost.app.promo.engine.BackgroundRemover 
+          return (T) new BackgroundRemover();
+
+          case 2: // com.clickpost.app.promo.engine.ImageBlender 
+          return (T) new ImageBlender();
+
+          case 3: // com.clickpost.app.promo.engine.PromoVideoEngine 
+          return (T) new PromoVideoEngine(ApplicationContextModule_ProvideContextFactory.provideContext(singletonCImpl.applicationContextModule));
+
+          case 4: // com.clickpost.app.promo.data.PromoRepository 
+          return (T) new PromoRepository(singletonCImpl.providePromoDaoProvider.get());
+
+          case 5: // com.clickpost.app.promo.data.PromoDao 
+          return (T) PromoModule_ProvidePromoDaoFactory.providePromoDao(singletonCImpl.providePromoDatabaseProvider.get());
+
+          case 6: // com.clickpost.app.promo.db.PromoDatabase 
+          return (T) PromoModule_ProvidePromoDatabaseFactory.providePromoDatabase(ApplicationContextModule_ProvideContextFactory.provideContext(singletonCImpl.applicationContextModule));
+
+          case 7: // com.clickpost.app.social.repository.AccountGroupRepository 
           return (T) SocialModule_ProvideAccountGroupRepositoryFactory.provideAccountGroupRepository(ApplicationContextModule_ProvideContextFactory.provideContext(singletonCImpl.applicationContextModule), singletonCImpl.provideCredentialVaultProvider.get());
 
-          case 1: // com.clickpost.app.social.storage.CredentialVault 
+          case 8: // com.clickpost.app.social.storage.CredentialVault 
           return (T) SocialModule_ProvideCredentialVaultFactory.provideCredentialVault(ApplicationContextModule_ProvideContextFactory.provideContext(singletonCImpl.applicationContextModule));
 
-          case 2: // java.util.Map<com.clickpost.app.social.data.Platform,javax.inject.Provider<com.clickpost.app.social.engine.PlatformAdapter>> com.clickpost.app.social.di.SocialModule#provideTikTokAdapter 
+          case 9: // java.util.Map<com.clickpost.app.social.data.Platform,javax.inject.Provider<com.clickpost.app.social.engine.PlatformAdapter>> com.clickpost.app.social.di.SocialModule#provideTikTokAdapter 
           return (T) SocialModule_ProvideTikTokAdapterFactory.provideTikTokAdapter();
 
-          case 3: // java.util.Map<com.clickpost.app.social.data.Platform,javax.inject.Provider<com.clickpost.app.social.engine.PlatformAdapter>> com.clickpost.app.social.di.SocialModule#provideFacebookAdapter 
+          case 10: // java.util.Map<com.clickpost.app.social.data.Platform,javax.inject.Provider<com.clickpost.app.social.engine.PlatformAdapter>> com.clickpost.app.social.di.SocialModule#provideFacebookAdapter 
           return (T) SocialModule_ProvideFacebookAdapterFactory.provideFacebookAdapter();
 
-          case 4: // java.util.Map<com.clickpost.app.social.data.Platform,javax.inject.Provider<com.clickpost.app.social.engine.PlatformAdapter>> com.clickpost.app.social.di.SocialModule#provideInstagramAdapter 
+          case 11: // java.util.Map<com.clickpost.app.social.data.Platform,javax.inject.Provider<com.clickpost.app.social.engine.PlatformAdapter>> com.clickpost.app.social.di.SocialModule#provideInstagramAdapter 
           return (T) SocialModule_ProvideInstagramAdapterFactory.provideInstagramAdapter();
 
-          case 5: // java.util.Map<com.clickpost.app.social.data.Platform,javax.inject.Provider<com.clickpost.app.social.engine.PlatformAdapter>> com.clickpost.app.social.di.SocialModule#provideYouTubeAdapter 
+          case 12: // java.util.Map<com.clickpost.app.social.data.Platform,javax.inject.Provider<com.clickpost.app.social.engine.PlatformAdapter>> com.clickpost.app.social.di.SocialModule#provideYouTubeAdapter 
           return (T) SocialModule_ProvideYouTubeAdapterFactory.provideYouTubeAdapter();
 
-          case 6: // com.clickpost.app.data.repository.ProfileRepository 
+          case 13: // com.clickpost.app.data.repository.ProfileRepository 
           return (T) new ProfileRepository(ApplicationContextModule_ProvideContextFactory.provideContext(singletonCImpl.applicationContextModule));
 
-          case 7: // com.clickpost.app.storage.StorageManager 
+          case 14: // com.clickpost.app.storage.StorageManager 
           return (T) AppModule_ProvideStorageManagerFactory.provideStorageManager(ApplicationContextModule_ProvideContextFactory.provideContext(singletonCImpl.applicationContextModule));
 
-          case 8: // com.clickpost.app.engine.BrandingEngine 
+          case 15: // com.clickpost.app.engine.BrandingEngine 
           return (T) AppModule_ProvideBrandingEngineFactory.provideBrandingEngine(ApplicationContextModule_ProvideContextFactory.provideContext(singletonCImpl.applicationContextModule));
 
-          case 9: // com.clickpost.app.engine.ExportEngine 
+          case 16: // com.clickpost.app.engine.ExportEngine 
           return (T) AppModule_ProvideExportEngineFactory.provideExportEngine(ApplicationContextModule_ProvideContextFactory.provideContext(singletonCImpl.applicationContextModule));
 
-          case 10: // com.clickpost.app.engine.ShareEngine 
+          case 17: // com.clickpost.app.engine.ShareEngine 
           return (T) AppModule_ProvideShareEngineFactory.provideShareEngine(ApplicationContextModule_ProvideContextFactory.provideContext(singletonCImpl.applicationContextModule));
 
-          case 11: // com.clickpost.app.engine.DeviceCapabilityChecker 
+          case 18: // com.clickpost.app.engine.DeviceCapabilityChecker 
           return (T) AppModule_ProvideDeviceCapabilityCheckerFactory.provideDeviceCapabilityChecker(ApplicationContextModule_ProvideContextFactory.provideContext(singletonCImpl.applicationContextModule));
 
-          case 12: // com.clickpost.app.social.engine.PublishEngine 
+          case 19: // androidx.work.WorkManager 
+          return (T) AppModule_ProvideWorkManagerFactory.provideWorkManager(ApplicationContextModule_ProvideContextFactory.provideContext(singletonCImpl.applicationContextModule));
+
+          case 20: // com.clickpost.app.social.engine.PublishEngine 
           return (T) SocialModule_ProvidePublishEngineFactory.providePublishEngine(singletonCImpl.mapOfPlatformAndPlatformAdapter(), singletonCImpl.provideCredentialVaultProvider.get(), singletonCImpl.provideAccountGroupRepositoryProvider.get(), singletonCImpl.providePublishHistoryRepositoryProvider.get());
 
-          case 13: // com.clickpost.app.social.repository.PublishHistoryRepository 
+          case 21: // com.clickpost.app.social.repository.PublishHistoryRepository 
           return (T) SocialModule_ProvidePublishHistoryRepositoryFactory.providePublishHistoryRepository(singletonCImpl.providePublishJobDaoProvider.get());
 
-          case 14: // com.clickpost.app.social.db.PublishJobDao 
+          case 22: // com.clickpost.app.social.db.PublishJobDao 
           return (T) SocialModule_ProvidePublishJobDaoFactory.providePublishJobDao(singletonCImpl.provideSocialDatabaseProvider.get());
 
-          case 15: // com.clickpost.app.social.db.SocialDatabase 
+          case 23: // com.clickpost.app.social.db.SocialDatabase 
           return (T) SocialModule_ProvideSocialDatabaseFactory.provideSocialDatabase(ApplicationContextModule_ProvideContextFactory.provideContext(singletonCImpl.applicationContextModule));
 
           default: throw new AssertionError(id);

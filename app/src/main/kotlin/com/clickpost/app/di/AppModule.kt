@@ -2,6 +2,7 @@ package com.clickpost.app.di
 
 import android.content.Context
 import androidx.media3.common.util.UnstableApi
+import androidx.work.WorkManager
 import com.clickpost.app.engine.BrandingEngine
 import com.clickpost.app.engine.DeviceCapabilityChecker
 import com.clickpost.app.engine.ExportEngine
@@ -43,4 +44,9 @@ object AppModule {
     @Singleton
     fun provideDeviceCapabilityChecker(@ApplicationContext context: Context): DeviceCapabilityChecker =
         DeviceCapabilityChecker(context)
+
+    @Provides
+    @Singleton
+    fun provideWorkManager(@ApplicationContext context: Context): WorkManager =
+        WorkManager.getInstance(context)
 }
