@@ -1,0 +1,22 @@
+R_DEF: Internal format may change without notice
+local
+drawable ic_launcher_background
+drawable ic_launcher_foreground
+drawable ic_splash_logo
+mipmap ic_launcher
+mipmap ic_launcher_round
+string app_name
+string export_brand
+string export_success
+string logo_required
+string save_changes
+string save_continue
+string select_video
+string setup_subtitle
+string setup_title
+string share_chooser_title
+string tagline
+style Theme.ClickPost
+style Theme.ClickPost.Splash
+xml file_paths
+xml network_security_config

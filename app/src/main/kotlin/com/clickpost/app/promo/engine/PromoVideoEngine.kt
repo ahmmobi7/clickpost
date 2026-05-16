@@ -2,13 +2,16 @@ package com.clickpost.app.promo.engine
 
 import android.content.Context
 import android.net.Uri
-import androidx.media3.common.ClippingConfiguration
+import androidx.media3.common.MediaItem.ClippingConfiguration
 import androidx.media3.common.Effect
 import androidx.media3.common.MediaItem
 import androidx.media3.common.MimeTypes
 import androidx.media3.common.audio.AudioProcessor
 import androidx.media3.common.util.UnstableApi
-import androidx.media3.common.VideoFrameProcessor
+import androidx.media3.common.util.Size
+import androidx.media3.common.util.GlProgram
+import androidx.media3.common.util.GlUtil
+import androidx.media3.common.VideoFrameProcessingException
 import androidx.media3.effect.Contrast
 import androidx.media3.effect.DefaultVideoFrameProcessor
 import androidx.media3.effect.GlEffect
@@ -62,40 +65,62 @@ class PromoVideoEngine @Inject constructor(
             effects.add(GlEffect { ctx, useHdr ->
                 object : SingleFrameGlShaderProgram(useHdr) {
                     private val step = 0.001f
+                    private var glProgram: GlProgram? = null
+
+                    override fun configure(width: Int, height: Int): Size {
+                        return Size(width, height)
+                    }
 
                     override fun drawFrame(inputTexId: Int, presentationTimeUs: Long) {
-                        // Standard drawing logic is handled by SingleFrameGlShaderProgram's internal renderer
-                        // using the vertex and fragment shaders provided.
-                        super.drawFrame(inputTexId, presentationTimeUs)
+                        try {
+                            if (glProgram == null) {
+                                val vertexCode = """
+                                    attribute vec4 aFramePosition;
+                                    attribute vec4 aTexSamplingPosition;
+                                    varying vec2 vTexSamplingPosition;
+                                    void main() {
+                                      gl_Position = aFramePosition;
+                                      vTexSamplingPosition = aTexSamplingPosition.xy;
+                                    }
+                                """.trimIndent()
+                                val fragmentCode = """
+                                    precision mediump float;
+                                    varying vec2 vTexSamplingPosition;
+                                    uniform sampler2D uTexSampler;
+                                    void main() {
+                                      vec4 color = texture2D(uTexSampler, vTexSamplingPosition);
+                                      vec4 up = texture2D(uTexSampler, vTexSamplingPosition + vec2(0.0, $step));
+                                      vec4 down = texture2D(uTexSampler, vTexSamplingPosition - vec2(0.0, $step));
+                                      vec4 left = texture2D(uTexSampler, vTexSamplingPosition - vec2($step, 0.0));
+                                      vec4 right = texture2D(uTexSampler, vTexSamplingPosition + vec2($step, 0.0));
+                                      gl_FragColor = color + (color * 4.0 - up - down - left - right) * ${sharpness * 2.0};
+                                    }
+                                """.trimIndent()
+                                glProgram = GlProgram(vertexCode, fragmentCode)
+                            }
+                            glProgram?.use()
+                            glProgram?.setSamplerTexIdUniform("uTexSampler", inputTexId, 0)
+                            glProgram?.setBufferAttribute(
+                                "aFramePosition",
+                                GlUtil.getNormalizedCoordinateBounds(),
+                                4
+                            )
+                            glProgram?.setBufferAttribute(
+                                "aTexSamplingPosition",
+                                GlUtil.getTextureCoordinateBounds(),
+                                4
+                            )
+                            glProgram?.bindAttributesAndUniforms()
+                            android.opengl.GLES20.glDrawArrays(android.opengl.GLES20.GL_TRIANGLE_STRIP, 0, 4)
+                        } catch (e: Exception) {
+                            throw VideoFrameProcessingException(e)
+                        }
                     }
 
-                    override fun configure(width: Int, height: Int): VideoFrameProcessor.InputSize {
-                        return VideoFrameProcessor.InputSize(width, height)
+                    override fun release() {
+                        super.release()
+                        glProgram?.delete()
                     }
-
-                    override fun getVertexCode(): String = """
-                        attribute vec4 aFramePosition;
-                        attribute vec4 aTexSamplingPosition;
-                        varying vec2 vTexSamplingPosition;
-                        void main() {
-                          gl_Position = aFramePosition;
-                          vTexSamplingPosition = aTexSamplingPosition.xy;
-                        }
-                    """.trimIndent()
-
-                    override fun getFragmentCode(): String = """
-                        precision mediump float;
-                        varying vec2 vTexSamplingPosition;
-                        uniform sampler2D uTexSampler;
-                        void main() {
-                          vec4 color = texture2D(uTexSampler, vTexSamplingPosition);
-                          vec4 up = texture2D(uTexSampler, vTexSamplingPosition + vec2(0.0, $step));
-                          vec4 down = texture2D(uTexSampler, vTexSamplingPosition - vec2(0.0, $step));
-                          vec4 left = texture2D(uTexSampler, vTexSamplingPosition - vec2($step, 0.0));
-                          vec4 right = texture2D(uTexSampler, vTexSamplingPosition + vec2($step, 0.0));
-                          gl_FragColor = color + (color * 4.0 - up - down - left - right) * ${sharpness * 2.0};
-                        }
-                    """.trimIndent()
                 }
             })
         }

@@ -1,6 +1,7 @@
 package com.clickpost.app.promo.data;
 
 import android.database.Cursor;
+import android.os.CancellationSignal;
 import androidx.annotation.NonNull;
 import androidx.room.CoroutinesRoom;
 import androidx.room.EntityDeletionOrUpdateAdapter;
@@ -9,12 +10,17 @@ import androidx.room.RoomDatabase;
 import androidx.room.RoomSQLiteQuery;
 import androidx.room.util.CursorUtil;
 import androidx.room.util.DBUtil;
+import androidx.room.util.StringUtil;
 import androidx.sqlite.db.SupportSQLiteStatement;
+import com.clickpost.app.promo.db.PromoConverters;
 import java.lang.Class;
 import java.lang.Exception;
+import java.lang.IllegalStateException;
+import java.lang.Long;
 import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
+import java.lang.StringBuilder;
 import java.lang.SuppressWarnings;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -37,6 +43,8 @@ public final class PromoDao_Impl implements PromoDao {
   private final EntityInsertionAdapter<ModelImage> __insertionAdapterOfModelImage;
 
   private final EntityInsertionAdapter<GeneratedPromo> __insertionAdapterOfGeneratedPromo;
+
+  private final PromoConverters __promoConverters = new PromoConverters();
 
   private final EntityInsertionAdapter<PromoMusic> __insertionAdapterOfPromoMusic;
 
@@ -102,7 +110,7 @@ public final class PromoDao_Impl implements PromoDao {
       @Override
       @NonNull
       protected String createQuery() {
-        return "INSERT OR REPLACE INTO `generated_promos` (`id`,`filePath`,`timestamp`,`metadata`) VALUES (nullif(?, 0),?,?,?)";
+        return "INSERT OR REPLACE INTO `generated_promos` (`id`,`filePath`,`timestamp`,`metadata`,`productAssetIds`) VALUES (nullif(?, 0),?,?,?,?)";
       }
 
       @Override
@@ -115,6 +123,12 @@ public final class PromoDao_Impl implements PromoDao {
           statement.bindNull(4);
         } else {
           statement.bindString(4, entity.getMetadata());
+        }
+        final String _tmp = __promoConverters.fromLongList(entity.getProductAssetIds());
+        if (_tmp == null) {
+          statement.bindNull(5);
+        } else {
+          statement.bindString(5, _tmp);
         }
       }
     };
@@ -345,6 +359,56 @@ public final class PromoDao_Impl implements PromoDao {
   }
 
   @Override
+  public Object getProductAssetsByIds(final List<Long> ids,
+      final Continuation<? super List<ProductAsset>> $completion) {
+    final StringBuilder _stringBuilder = StringUtil.newStringBuilder();
+    _stringBuilder.append("SELECT * FROM product_assets WHERE id IN (");
+    final int _inputSize = ids.size();
+    StringUtil.appendPlaceholders(_stringBuilder, _inputSize);
+    _stringBuilder.append(")");
+    final String _sql = _stringBuilder.toString();
+    final int _argCount = 0 + _inputSize;
+    final RoomSQLiteQuery _statement = RoomSQLiteQuery.acquire(_sql, _argCount);
+    int _argIndex = 1;
+    for (long _item : ids) {
+      _statement.bindLong(_argIndex, _item);
+      _argIndex++;
+    }
+    final CancellationSignal _cancellationSignal = DBUtil.createCancellationSignal();
+    return CoroutinesRoom.execute(__db, false, _cancellationSignal, new Callable<List<ProductAsset>>() {
+      @Override
+      @NonNull
+      public List<ProductAsset> call() throws Exception {
+        final Cursor _cursor = DBUtil.query(__db, _statement, false, null);
+        try {
+          final int _cursorIndexOfId = CursorUtil.getColumnIndexOrThrow(_cursor, "id");
+          final int _cursorIndexOfUri = CursorUtil.getColumnIndexOrThrow(_cursor, "uri");
+          final int _cursorIndexOfType = CursorUtil.getColumnIndexOrThrow(_cursor, "type");
+          final int _cursorIndexOfDescription = CursorUtil.getColumnIndexOrThrow(_cursor, "description");
+          final List<ProductAsset> _result = new ArrayList<ProductAsset>(_cursor.getCount());
+          while (_cursor.moveToNext()) {
+            final ProductAsset _item_1;
+            final long _tmpId;
+            _tmpId = _cursor.getLong(_cursorIndexOfId);
+            final String _tmpUri;
+            _tmpUri = _cursor.getString(_cursorIndexOfUri);
+            final String _tmpType;
+            _tmpType = _cursor.getString(_cursorIndexOfType);
+            final String _tmpDescription;
+            _tmpDescription = _cursor.getString(_cursorIndexOfDescription);
+            _item_1 = new ProductAsset(_tmpId,_tmpUri,_tmpType,_tmpDescription);
+            _result.add(_item_1);
+          }
+          return _result;
+        } finally {
+          _cursor.close();
+          _statement.release();
+        }
+      }
+    }, $completion);
+  }
+
+  @Override
   public Flow<List<ModelImage>> getAllModelImages() {
     final String _sql = "SELECT * FROM model_images";
     final RoomSQLiteQuery _statement = RoomSQLiteQuery.acquire(_sql, 0);
@@ -400,6 +464,7 @@ public final class PromoDao_Impl implements PromoDao {
           final int _cursorIndexOfFilePath = CursorUtil.getColumnIndexOrThrow(_cursor, "filePath");
           final int _cursorIndexOfTimestamp = CursorUtil.getColumnIndexOrThrow(_cursor, "timestamp");
           final int _cursorIndexOfMetadata = CursorUtil.getColumnIndexOrThrow(_cursor, "metadata");
+          final int _cursorIndexOfProductAssetIds = CursorUtil.getColumnIndexOrThrow(_cursor, "productAssetIds");
           final List<GeneratedPromo> _result = new ArrayList<GeneratedPromo>(_cursor.getCount());
           while (_cursor.moveToNext()) {
             final GeneratedPromo _item;
@@ -415,7 +480,20 @@ public final class PromoDao_Impl implements PromoDao {
             } else {
               _tmpMetadata = _cursor.getString(_cursorIndexOfMetadata);
             }
-            _item = new GeneratedPromo(_tmpId,_tmpFilePath,_tmpTimestamp,_tmpMetadata);
+            final List<Long> _tmpProductAssetIds;
+            final String _tmp;
+            if (_cursor.isNull(_cursorIndexOfProductAssetIds)) {
+              _tmp = null;
+            } else {
+              _tmp = _cursor.getString(_cursorIndexOfProductAssetIds);
+            }
+            final List<Long> _tmp_1 = __promoConverters.toLongList(_tmp);
+            if (_tmp_1 == null) {
+              throw new IllegalStateException("Expected NON-NULL 'java.util.List<java.lang.Long>', but it was NULL.");
+            } else {
+              _tmpProductAssetIds = _tmp_1;
+            }
+            _item = new GeneratedPromo(_tmpId,_tmpFilePath,_tmpTimestamp,_tmpMetadata,_tmpProductAssetIds);
             _result.add(_item);
           }
           return _result;

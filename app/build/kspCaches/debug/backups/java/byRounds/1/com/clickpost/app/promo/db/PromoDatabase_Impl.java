@@ -33,16 +33,16 @@ public final class PromoDatabase_Impl extends PromoDatabase {
   @Override
   @NonNull
   protected SupportSQLiteOpenHelper createOpenHelper(@NonNull final DatabaseConfiguration config) {
-    final SupportSQLiteOpenHelper.Callback _openCallback = new RoomOpenHelper(config, new RoomOpenHelper.Delegate(1) {
+    final SupportSQLiteOpenHelper.Callback _openCallback = new RoomOpenHelper(config, new RoomOpenHelper.Delegate(2) {
       @Override
       public void createAllTables(@NonNull final SupportSQLiteDatabase db) {
         db.execSQL("CREATE TABLE IF NOT EXISTS `hook_videos` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `uri` TEXT NOT NULL, `metadata` TEXT)");
         db.execSQL("CREATE TABLE IF NOT EXISTS `product_assets` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `uri` TEXT NOT NULL, `type` TEXT NOT NULL, `description` TEXT NOT NULL)");
         db.execSQL("CREATE TABLE IF NOT EXISTS `model_images` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `uri` TEXT NOT NULL, `metadata` TEXT)");
-        db.execSQL("CREATE TABLE IF NOT EXISTS `generated_promos` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `filePath` TEXT NOT NULL, `timestamp` INTEGER NOT NULL, `metadata` TEXT)");
+        db.execSQL("CREATE TABLE IF NOT EXISTS `generated_promos` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `filePath` TEXT NOT NULL, `timestamp` INTEGER NOT NULL, `metadata` TEXT, `productAssetIds` TEXT NOT NULL)");
         db.execSQL("CREATE TABLE IF NOT EXISTS `promo_music` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `uri` TEXT NOT NULL, `name` TEXT NOT NULL)");
         db.execSQL("CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)");
-        db.execSQL("INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'f52d3404f1570b296ab8633e1ba54ddc')");
+        db.execSQL("INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'c67a383632c1b98fa2fa30055507ef36')");
       }
 
       @Override
@@ -135,11 +135,12 @@ public final class PromoDatabase_Impl extends PromoDatabase {
                   + " Expected:\n" + _infoModelImages + "\n"
                   + " Found:\n" + _existingModelImages);
         }
-        final HashMap<String, TableInfo.Column> _columnsGeneratedPromos = new HashMap<String, TableInfo.Column>(4);
+        final HashMap<String, TableInfo.Column> _columnsGeneratedPromos = new HashMap<String, TableInfo.Column>(5);
         _columnsGeneratedPromos.put("id", new TableInfo.Column("id", "INTEGER", true, 1, null, TableInfo.CREATED_FROM_ENTITY));
         _columnsGeneratedPromos.put("filePath", new TableInfo.Column("filePath", "TEXT", true, 0, null, TableInfo.CREATED_FROM_ENTITY));
         _columnsGeneratedPromos.put("timestamp", new TableInfo.Column("timestamp", "INTEGER", true, 0, null, TableInfo.CREATED_FROM_ENTITY));
         _columnsGeneratedPromos.put("metadata", new TableInfo.Column("metadata", "TEXT", false, 0, null, TableInfo.CREATED_FROM_ENTITY));
+        _columnsGeneratedPromos.put("productAssetIds", new TableInfo.Column("productAssetIds", "TEXT", true, 0, null, TableInfo.CREATED_FROM_ENTITY));
         final HashSet<TableInfo.ForeignKey> _foreignKeysGeneratedPromos = new HashSet<TableInfo.ForeignKey>(0);
         final HashSet<TableInfo.Index> _indicesGeneratedPromos = new HashSet<TableInfo.Index>(0);
         final TableInfo _infoGeneratedPromos = new TableInfo("generated_promos", _columnsGeneratedPromos, _foreignKeysGeneratedPromos, _indicesGeneratedPromos);
@@ -164,7 +165,7 @@ public final class PromoDatabase_Impl extends PromoDatabase {
         }
         return new RoomOpenHelper.ValidationResult(true, null);
       }
-    }, "f52d3404f1570b296ab8633e1ba54ddc", "e33490632ed5c39dae6875c31bd8ad63");
+    }, "c67a383632c1b98fa2fa30055507ef36", "5d33d0825cd4ff14c4cb5aab58f1ed2c");
     final SupportSQLiteOpenHelper.Configuration _sqliteConfig = SupportSQLiteOpenHelper.Configuration.builder(config.context).name(config.name).callback(_openCallback).build();
     final SupportSQLiteOpenHelper _helper = config.sqliteOpenHelperFactory.create(_sqliteConfig);
     return _helper;
