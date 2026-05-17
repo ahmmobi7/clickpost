@@ -1,6 +1,7 @@
 package com.clickpost.app.promo.engine
 
 import android.content.Context
+import android.graphics.Bitmap
 import android.net.Uri
 import androidx.media3.common.MediaItem.ClippingConfiguration
 import androidx.media3.common.Effect
@@ -17,6 +18,9 @@ import androidx.media3.effect.DefaultVideoFrameProcessor
 import androidx.media3.effect.GlEffect
 import androidx.media3.effect.GlShaderProgram
 import androidx.media3.effect.SingleFrameGlShaderProgram
+import androidx.media3.effect.BitmapOverlay
+import androidx.media3.effect.OverlayEffect
+import androidx.media3.effect.OverlaySettings
 import androidx.media3.transformer.Composition
 import androidx.media3.transformer.EditedMediaItem
 import androidx.media3.transformer.EditedMediaItemSequence
@@ -44,6 +48,17 @@ class PromoVideoEngine @Inject constructor(
 
     @UnstableApi
     fun buildEditedMediaItem(uri: Uri, durationMs: Long? = null, contrast: Float, sharpness: Float): EditedMediaItem {
+        return buildEditedMediaItemWithEffects(uri, durationMs, contrast, sharpness, emptyList())
+    }
+
+    @UnstableApi
+    fun buildEditedMediaItemWithEffects(
+        uri: Uri,
+        durationMs: Long? = null,
+        contrast: Float,
+        sharpness: Float,
+        extraEffects: List<Effect>
+    ): EditedMediaItem {
         val mediaItemBuilder = MediaItem.Builder().setUri(uri)
         if (durationMs != null) {
             // For images
@@ -125,6 +140,8 @@ class PromoVideoEngine @Inject constructor(
             })
         }
 
+        effects.addAll(extraEffects)
+
         return EditedMediaItem.Builder(mediaItemBuilder.build())
             .setEffects(androidx.media3.transformer.Effects(emptyList(), effects))
             .build()
@@ -138,10 +155,20 @@ class PromoVideoEngine @Inject constructor(
         targetResolutionHeight: Int,
         slideDurationS: Int = 5,
         contrast: Float = 1.0f,
-        sharpness: Float = 0.0f
+        sharpness: Float = 0.0f,
+        description: String? = null,
+        fontName: String? = null,
+        colorHex: String? = null
     ): Composition {
         // Video sequences
-        val editedHookItem = buildEditedMediaItem(hookVideoUri, null, contrast, sharpness)
+        val hookEffects = mutableListOf<Effect>()
+        if (description != null && fontName != null && colorHex != null) {
+            hookEffects.add(OverlayEffect(ImmutableList.of(
+                PromoTextOverlay(description, fontName, colorHex)
+            )))
+        }
+
+        val editedHookItem = buildEditedMediaItemWithEffects(hookVideoUri, null, contrast, sharpness, hookEffects)
 
         val blendedSequences = blendedBitmapUris.map { uri ->
             buildEditedMediaItem(uri, slideDurationS * 1000L, contrast, sharpness)
@@ -162,5 +189,54 @@ class PromoVideoEngine @Inject constructor(
 
         return Composition.Builder(ImmutableList.copyOf(sequences))
             .build()
+    }
+
+    private class PromoTextOverlay(
+        private val text: String,
+        private val fontName: String,
+        private val colorHex: String
+    ) : BitmapOverlay() {
+        private var cachedBitmap: Bitmap? = null
+        private var settings: OverlaySettings = OverlaySettings.Builder().build()
+
+        override fun configure(videoSize: Size) {
+            val textSizePx = videoSize.height * 0.05f
+            cachedBitmap = renderTextBitmap(text, textSizePx)
+
+            // 15% from bottom -> Alignment(0f, 0.7f)
+            settings = OverlaySettings.Builder()
+                .setOverlayFrameAnchor(0f, 0f)
+                .setBackgroundFrameAnchor(0f, 0.7f)
+                .build()
+        }
+
+        override fun getBitmap(presentationTimeUs: Long): Bitmap {
+            return cachedBitmap!!
+        }
+
+        override fun getOverlaySettings(presentationTimeUs: Long): OverlaySettings = settings
+
+        private fun renderTextBitmap(text: String, textSizePx: Float): Bitmap {
+            val paint = android.graphics.Paint(android.graphics.Paint.ANTI_ALIAS_FLAG).apply {
+                color = try { android.graphics.Color.parseColor(colorHex) } catch (e: Exception) { android.graphics.Color.WHITE }
+                textSize = textSizePx
+                typeface = when (fontName.lowercase()) {
+                    "impact" -> android.graphics.Typeface.create("sans-serif-condensed", android.graphics.Typeface.BOLD)
+                    "bebas" -> android.graphics.Typeface.create("serif", android.graphics.Typeface.BOLD)
+                    "modern" -> android.graphics.Typeface.create("monospace", android.graphics.Typeface.BOLD)
+                    else -> android.graphics.Typeface.create(android.graphics.Typeface.DEFAULT, android.graphics.Typeface.BOLD)
+                }
+                setShadowLayer(8f, 4f, 4f, android.graphics.Color.BLACK)
+                style = android.graphics.Paint.Style.FILL_AND_STROKE
+                strokeWidth = 2f
+            }
+
+            val width = paint.measureText(text).toInt() + 40
+            val height = (paint.descent() - paint.ascent()).toInt() + 20
+            val bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
+            val canvas = android.graphics.Canvas(bitmap)
+            canvas.drawText(text, 20f, -paint.ascent() + 10f, paint)
+            return bitmap
+        }
     }
 }

@@ -40,6 +40,8 @@ class PromoWorker @AssistedInject constructor(
         val modelUri = inputData.getString("modelUri") ?: return@withContext Result.failure()
         val musicUri = inputData.getString("musicUri")
         val description = inputData.getString("description") ?: ""
+        val selectedFont = inputData.getString("selectedFont") ?: "Default"
+        val selectedColor = inputData.getString("selectedColor") ?: "#FFFFFF"
         val resolutionHeight = inputData.getInt("resolutionHeight", 1080)
         val slideDurationS = inputData.getInt("slideDurationS", 5)
         val contrast = inputData.getFloat("contrast", 1.0f)
@@ -66,6 +68,8 @@ class PromoWorker @AssistedInject constructor(
                     targetWidth = targetWidth,
                     targetHeight = resolutionHeight,
                     description = "$description ($index)",
+                    fontName = selectedFont,
+                    colorHex = selectedColor,
                     logoBitmap = null,
                     contactInfo = "Contact us: @clickpost"
                 )
@@ -101,7 +105,10 @@ class PromoWorker @AssistedInject constructor(
                 targetResolutionHeight = resolutionHeight,
                 slideDurationS = slideDurationS,
                 contrast = contrast,
-                sharpness = sharpness
+                sharpness = sharpness,
+                description = description,
+                fontName = selectedFont,
+                colorHex = selectedColor
             )
 
             withContext(Dispatchers.Main) {
