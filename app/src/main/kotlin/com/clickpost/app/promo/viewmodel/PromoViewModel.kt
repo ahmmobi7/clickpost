@@ -33,7 +33,12 @@ data class PromoUiState(
     val sharpness: Float = 0.0f,
     val isProcessing: Boolean = false,
     val exportProgress: Float = 0f,
-    val errorMessage: String? = null
+    val errorMessage: String? = null,
+    val productDescription: String = "",
+    val selectedFont: String = "Default",
+    val selectedColor: String = "#FFFFFF",
+    val previewAssetUri: String? = null,
+    val previewAssetType: String? = null // "Image" or "Video"
 )
 
 @HiltViewModel
@@ -140,6 +145,22 @@ class PromoViewModel @Inject constructor(
         _uiState.update { it.copy(sharpness = sharpness) }
     }
 
+    fun updateProductDescription(description: String) {
+        _uiState.update { it.copy(productDescription = description) }
+    }
+
+    fun updateSelectedFont(font: String) {
+        _uiState.update { it.copy(selectedFont = font) }
+    }
+
+    fun updateSelectedColor(colorHex: String) {
+        _uiState.update { it.copy(selectedColor = colorHex) }
+    }
+
+    fun setPreviewAsset(uri: String?, type: String?) {
+        _uiState.update { it.copy(previewAssetUri = uri, previewAssetType = type) }
+    }
+
     private fun copyToInternalStorage(uriString: String, fileName: String): String {
         val uri = Uri.parse(uriString)
         val destFile = File(context.filesDir, "promo_assets/$fileName")
@@ -159,7 +180,7 @@ class PromoViewModel @Inject constructor(
         }
     }
 
-    fun startPromoGeneration(description: String, resolutionHeight: Int) {
+    fun startPromoGeneration(resolutionHeight: Int) {
         val uiState = _uiState.value
         val hookUri = uiState.selectedHookVideo?.uri ?: return
         val productUris = uiState.selectedProductAssets.map { it.uri }.toTypedArray()
@@ -173,7 +194,9 @@ class PromoViewModel @Inject constructor(
                 "productUris" to productUris,
                 "modelUri" to modelUri,
                 "musicUri" to musicUri,
-                "description" to description,
+                "description" to uiState.productDescription,
+                "selectedFont" to uiState.selectedFont,
+                "selectedColor" to uiState.selectedColor,
                 "resolutionHeight" to resolutionHeight,
                 "slideDurationS" to uiState.slideDurationS,
                 "contrast" to uiState.contrast,

@@ -104,7 +104,7 @@ fun ClickPostNavGraph(
                 PromoAssetSelectionScreen(
                     viewModel = promoViewModel,
                     onNext = { resolution ->
-                        promoViewModel.startPromoGeneration("Check out our new product!", resolution)
+                        promoViewModel.startPromoGeneration(resolution)
                         navController.popBackStack(Routes.PROMO_DASHBOARD, false)
                     },
                     onBack = { navController.popBackStack() }

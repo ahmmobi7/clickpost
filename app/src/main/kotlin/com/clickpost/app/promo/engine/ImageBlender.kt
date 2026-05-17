@@ -13,6 +13,8 @@ class ImageBlender @Inject constructor() {
         targetWidth: Int,
         targetHeight: Int,
         description: String,
+        fontName: String,
+        colorHex: String,
         logoBitmap: Bitmap?,
         contactInfo: String?
     ): Bitmap {
@@ -32,13 +34,19 @@ class ImageBlender @Inject constructor() {
         canvas.drawBitmap(productScaled, productX, productY.toFloat(), null)
 
         val paint = Paint().apply {
-            color = Color.WHITE
+            color = try { Color.parseColor(colorHex) } catch (e: Exception) { Color.WHITE }
             textSize = targetHeight * 0.03f
             isAntiAlias = true
             textAlign = Paint.Align.CENTER
+            typeface = when (fontName.lowercase()) {
+                "impact" -> Typeface.create("sans-serif-condensed", Typeface.BOLD)
+                "bebas" -> Typeface.create("serif", Typeface.BOLD)
+                "modern" -> Typeface.create("monospace", Typeface.BOLD)
+                else -> Typeface.create(Typeface.DEFAULT, Typeface.BOLD)
+            }
             setShadowLayer(5f, 0f, 0f, Color.BLACK)
         }
-        canvas.drawText(description, targetWidth / 2f, productY + productHeight + 40f, paint)
+        canvas.drawText(description, targetWidth / 2f, productY - 40f, paint)
 
         logoBitmap?.let {
             val logoWidth = (targetWidth * 0.15f).toInt()
